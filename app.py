@@ -1,70 +1,32 @@
-# ==========================================
-# SECTION 1: IMPORTS & TOOL SETUP
-# ==========================================
-# Import the pandas library (nickname 'pd') to read and handle CSV spreadsheets.
-import pandas as pd
-
-# Import the streamlit library (nickname 'st') to build our web app interface.
 import streamlit as st
 
+# Configure the page layout
+st.set_page_config(page_title="Mel's Goods", page_icon="🛍️", layout="wide")
 
-# ==========================================
-# SECTION 2: DATA LOADING FUNCTION
-# ==========================================
-# The '@st.cache_data' decorator saves the CSV file in your app's memory
-# so it doesn't have to reload from scratch every time someone searches.
-@st.cache_data
-def load_data():
-  # Open and read your Bible CSV file
-  return pd.read_csv("KJV.csv")
-
-
-# Run our function right away to load the spreadsheet into a variable called 'df'
-df = load_data()
-
-
-# ==========================================
-# SECTION 3: WEB PAGE LAYOUT & TITLE
-# ==========================================
-# Set the main large title displayed at the top of your webpage
-st.title("📖 My Bible Verse Search Tool")
-
-# Display introductory helper text right under the title
+# Store Header
+st.title("🛍️ Welcome to Mel's Goods!")
 st.write(
-    "Search through your CSV database instantly by keyword, book, or topic!"
+    "Discover quality items, curated collections, and your favorite everyday"
+    " essentials."
 )
 
+st.markdown("---")
 
-# ==========================================
-# SECTION 4: SEARCH BAR & INPUT
-# ==========================================
-# Create an interactive text input box for visitors to type keywords into
-search_query = st.text_input(
-    "Enter a keyword or topic (e.g., *love*, *faith*, *peace*):"
-)
+# Navigation layout
+col1, col2, col3 = st.columns(3)
 
+with col1:
+  st.subheader("🏠 Home")
+  st.write("Browse our welcome page and featured items right here.")
 
-# ==========================================
-# SECTION 5: FILTERING & DISPLAY LOGIC
-# ==========================================
-# Check if the user has typed something into the search box
-if search_query:
-  # Filter the spreadsheet table:
-  # - Look through all text columns
-  # - Check if they contain the search word (ignoring upper/lower case)
-  # - Keep every matching row
-  results = df[
-      df.select_dtypes(include=["object"])
-      .apply(lambda col: col.str.contains(search_query, case=False, na=False))
-      .any(axis=1)
-  ]
+with col2:
+  st.subheader("🔍 Search App")
+  st.write("Use the sidebar menu on the left to open your search tool.")
 
-  # Show how many total matching verses were found
-  st.write(f"Found **{len(results)}** results for *'{search_query}'*:")
+with col3:
+  st.subheader("📞 Contact")
+  st.write("Reach out to our team for questions or support.")
 
-  # Display the matched rows inside a clean, scrollable website table
-  st.dataframe(results)
-
-else:
-  # If the search box is completely empty, show a helpful info box
-  st.info("Type a word above to search your Bible database.")
+st.markdown("---")
+st.header("✨ Featured Collections")
+st.write("Check out the sidebar to navigate to your search page!")
