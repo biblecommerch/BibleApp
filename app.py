@@ -1,32 +1,19 @@
 import streamlit as st
 
-# Configure the page layout
-st.set_page_config(page_title="Mel's Goods", page_icon="🛍️", layout="wide")
-
-# Store Header
-st.title("🛍️ Welcome to Mel's Goods!")
-st.write(
-    "Discover quality items, curated collections, and your favorite everyday"
-    " essentials."
+# 1. Define your pages with custom titles, punctuation, and icons
+home_page = st.Page("app.py", title="Mel's Goods Home", icon="🏠")
+search_page = st.Page(
+    "pages/bible_search.py", title="Bible Search", icon="📖"
 )
 
-st.markdown("---")
+# 2. Set up the navigation menu
+pg = st.navigation([home_page, search_page])
 
-# Navigation layout
-col1, col2, col3 = st.columns(3)
+# 3. Run the navigation system
+pg.run()
 
-with col1:
-  st.subheader("🏠 Home")
-  st.write("Browse our welcome page and featured items right here.")
-
-with col2:
-  st.subheader("🔍 Search App")
-  st.write("Use the sidebar menu on the left to open your search tool.")
-
-with col3:
-  st.subheader("📞 Contact")
-  st.write("Reach out to our team for questions or support.")
-
-st.markdown("---")
-st.header("✨ Featured Collections")
-st.write("Check out the sidebar to navigate to your search page!")
+# --- Your Main Home Page Content ---
+st.title("Welcome to Mel's Goods! 🛒")
+st.write(
+    "Use the sidebar menu on the left to switch between the Home page and the Bible Search tool."
+)
