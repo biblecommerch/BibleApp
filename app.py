@@ -1,19 +1,13 @@
 import streamlit as st
 
-# 1. Define your pages with custom titles, punctuation, and icons
-home_page = st.Page("app.py", title="Mel's Goods Home", icon="🏠")
-search_page = st.Page(
-    "pages/bible_search.py", title="Bible Search", icon="📖"
-)
+# Set up the navigation menu pointing to your pages folder
+pg = st.navigation([st.Page("pages/bible_search.py", title="Bible Search", icon="📖")])
 
-# 2. Set up the navigation menu
-pg = st.navigation([home_page, search_page])
-
-# 3. Run the navigation system
+# Run the navigation system
 pg.run()
 
-# --- Your Main Home Page Content ---
+# --- Your Main Mel's Goods Home Page Content ---
 st.title("Welcome to Mel's Goods! 🛒")
 st.write(
-    "Use the sidebar menu on the left to switch between the Home page and the Bible Search tool."
+    "Use the sidebar menu on the left to switch between pages and access the Bible Search tool."
 )
