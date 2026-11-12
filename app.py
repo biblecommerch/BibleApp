@@ -1,55 +1,70 @@
-# Import the pandas library and give it the short nickname 'pd'
-# Pandas is the tool Python uses to open and read spreadsheet files like CSVs.
+# ==========================================
+# SECTION 1: IMPORTS & TOOL SETUP
+# ==========================================
+# Import the pandas library (nickname 'pd') to read and handle CSV spreadsheets.
 import pandas as pd
 
-# Import the streamlit library and give it the short nickname 'st'
-# Streamlit is the tool that turns our Python code into a live website.
+# Import the streamlit library (nickname 'st') to build our web app interface.
 import streamlit as st
 
-# Set the main large title that appears at the very top of your webpage
+
+# ==========================================
+# SECTION 2: DATA LOADING FUNCTION
+# ==========================================
+# The '@st.cache_data' decorator saves the CSV file in your app's memory
+# so it doesn't have to reload from scratch every time someone searches.
+@st.cache_data
+def load_data():
+  # Open and read your Bible CSV file
+  return pd.read_csv("KJV.csv")
+
+
+# Run our function right away to load the spreadsheet into a variable called 'df'
+df = load_data()
+
+
+# ==========================================
+# SECTION 3: WEB PAGE LAYOUT & TITLE
+# ==========================================
+# Set the main large title displayed at the top of your webpage
 st.title("📖 My Bible Verse Search Tool")
 
-# Display a subtitle or introductory helper text right under the title
+# Display introductory helper text right under the title
 st.write(
     "Search through your CSV database instantly by keyword, book, or topic!"
 )
 
 
-# Define a function to load our data
-# The '@st.cache_data' decorator tells Streamlit to save the CSV in memory
-# so the app loads instantly on future clicks instead of reloading every time.
-@st.cache_data
-def load_data():
-  # Read the CSV file into a data table (DataFrame)
-  return pd.read_csv("KJV.csv")
-
-
-# Run our function and store the loaded spreadsheet table inside the variable 'df'
-df = load_data()
-
-# Create an interactive text input box on the website for the user to type in
+# ==========================================
+# SECTION 4: SEARCH BAR & INPUT
+# ==========================================
+# Create an interactive text input box for visitors to type keywords into
 search_query = st.text_input(
     "Enter a keyword or topic (e.g., *love*, *faith*, *peace*):"
 )
 
-# Check if the user has actually typed something into the search box
+
+# ==========================================
+# SECTION 5: FILTERING & DISPLAY LOGIC
+# ==========================================
+# Check if the user has typed something into the search box
 if search_query:
   # Filter the spreadsheet table:
-  # 1. Look at text columns.
-  # 2. Check if they contain the search word (ignoring upper/lower case).
-  # 3. Keep any row where a match is found.
+  # - Look through all text columns
+  # - Check if they contain the search word (ignoring upper/lower case)
+  # - Keep every matching row
   results = df[
       df.select_dtypes(include=["object"])
       .apply(lambda col: col.str.contains(search_query, case=False, na=False))
       .any(axis=1)
   ]
 
-  # Display a count of how many matching verses were found on the page
+  # Show how many total matching verses were found
   st.write(f"Found **{len(results)}** results for *'{search_query}'*:")
 
-  # Display all the matching rows in a clean, scrollable spreadsheet table on the site
+  # Display the matched rows inside a clean, scrollable website table
   st.dataframe(results)
 
 else:
-  # If the search box is empty, show a helpful blue info box telling the user what to do
+  # If the search box is completely empty, show a helpful info box
   st.info("Type a word above to search your Bible database.")
