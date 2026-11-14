@@ -29,16 +29,24 @@ st.markdown(
         border: 1px solid #4a6b4e;
         margin-bottom: 20px;
     }
-    /* Fix Streamlit expander text visibility */
-    [data-testid="stExpander"] details summary p {
+    /* Fix Streamlit expander container and header colors */
+    [data-testid="stExpander"] {
+        background-color: #2b3a2a !important;
+        border: 1px solid #4a6b4e !important;
+        border-radius: 10px;
+        margin-bottom: 10px;
+    }
+    [data-testid="stExpander"] summary {
+        background-color: #2b3a2a !important;
+    }
+    [data-testid="stExpander"] details summary p, 
+    [data-testid="stExpander"] summary span {
         color: #f4f1ea !important;
         font-weight: 600;
     }
-    [data-testid="stExpander"] {
-        background-color: #2b3a2a;
-        border: 1px solid #4a6b4e;
-        border-radius: 10px;
-        margin-bottom: 10px;
+    /* Fix open expander background */
+    [data-testid="stExpander"] div[data-baseweb="accordion"] {
+        background-color: #2b3a2a !important;
     }
     </style>
 """,
@@ -149,7 +157,7 @@ challenge_days = [
         "verse": "John 3:16",
         "search_book": "John",
         "chapter": 3,
-        "commentary": "This is the ultimate anchor of the Christian faith. God loved you so deeply that He gave His Son so you could have eternal life.",
+        "commentary": "This is the ultimate anchor of the Christian faith. God loved you so deeply that He gave His Son so you could have everlasting life.",
     },
     {
         "day": 10,
