@@ -29,6 +29,17 @@ st.markdown(
         border: 1px solid #4a6b4e;
         margin-bottom: 20px;
     }
+    /* Fix Streamlit expander text visibility */
+    [data-testid="stExpander"] details summary p {
+        color: #f4f1ea !important;
+        font-weight: 600;
+    }
+    [data-testid="stExpander"] {
+        background-color: #2b3a2a;
+        border: 1px solid #4a6b4e;
+        border-radius: 10px;
+        margin-bottom: 10px;
+    }
     </style>
 """,
     unsafe_allow_html=True,
@@ -301,17 +312,10 @@ for item in challenge_days:
     target_verse_ref = item["verse"]
 
     with st.expander(f"Day {day_num} ({target_verse_ref})"):
-        # Display Commentary first for a warm devotional feel
-        st.markdown(f"*{item['commentary']}*")
-        st.markdown("---")
-        st.markdown(f"**Anchor Verse ({target_verse_ref}):**")
-
-        # Pull exact verse text from KJV.csv
+        # 1. Pull and display the actual verse text FIRST
         if df is not None and not df.empty:
-            # Parse book and chapter/verse from reference string (e.g., "Genesis 1:1")
             parts = target_verse_ref.split(" ")
             if len(parts) >= 2:
-                # Handle multi-word book names like "1 John" or "2 Corinthians"
                 if parts[0] in ["1", "2"] and len(parts) >= 3:
                     b_name = f"{parts[0]} {parts[1]}"
                     ref_rest = parts[2]
@@ -322,14 +326,12 @@ for item in challenge_days:
                 chap_verse = ref_rest.split(":")
                 c_num = int(chap_verse[0])
 
-                # Filter CSV
                 verses_to_show = df[
                     (df["Book"].str.contains(b_name, case=False, na=False))
                     & (df["Chapter"] == c_num)
                 ]
 
                 if not verses_to_show.empty:
-                    # If specific verse number exists, try to filter it
                     if len(chap_verse) > 1:
                         v_num_target = int(chap_verse[1].split("-")[0])
                         specific_v = verses_to_show[
@@ -344,7 +346,6 @@ for item in challenge_days:
                                     unsafe_allow_html=True,
                                 )
                         else:
-                            # Fallback to show chapter verses if exact match fails
                             for _, row in verses_to_show.head(3).iterrows():
                                 v_num = row.get("Verse", "")
                                 v_text = row.get("Text", "")
@@ -368,3 +369,9 @@ for item in challenge_days:
             st.info(
                 f"Please verify KJV.csv is uploaded to view full text for {target_verse_ref}."
             )
+
+        # 2. Divider line
+        st.markdown("---")
+
+        # 3. Commentary LAST
+        st.markdown(f"*{item['commentary']}*")
