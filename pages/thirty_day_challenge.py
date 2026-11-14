@@ -64,302 +64,307 @@ st.markdown(
     <h3 style="margin-top:0; color:#b7d5b8;">📖 About This 30-Day Journey</h3>
     <p>Why do these 30 verses go together? This plan is carefully structured around four key pillars of Christian faith and daily walk:</p>
     <ul>
-        <li><b>Days 1–7: Foundations of Faith & Creation</b> — Establishing where we came from and anchoring our trust in God as our protector and shepherd.</li>
-        <li><b>Days 8–14: The Promised Savior & Life of Christ</b> — Following the prophecy, birth, and teachings of Jesus to understand His heart and love.</li>
-        <li><b>Days 15–21: Grace, Forgiveness, & New Life</b> — Exploring what it means to be a new creation through grace, walking in the Spirit, and loving one another.</li>
-        <li><b>Days 22–30: Strength, Peace, & Endurance</b> — Equipping ourselves with the armor of God, standing strong in trials, and living with eternal hope.</li>
+        <li><b>Days 1 to 7: Foundations of Faith and Trust</b> establishing where we came from and anchoring our trust in God as our protector and shepherd.</li>
+        <li><b>Days 8 to 14: The Heart and Life of Christ</b> following the prophecy, love, and teachings of Jesus to understand His heart.</li>
+        <li><b>Days 15 to 21: Grace, Forgiveness, and New Life</b> exploring what it means to be a new creation through grace, walking in the Spirit, and loving one another.</li>
+        <li><b>Days 22 to 30: Strength, Peace, and Eternal Hope</b> equipping ourselves with His strength, standing strong in trials, and living with joyful anticipation.</li>
     </ul>
-    <p style="margin-bottom:0; font-size: 0.9em; color: #b7d5b8;">Check off each day as you go, and click the dropdown under any day to read the scripture online instantly!</p>
+    <p style="margin-bottom:0; font-size: 0.9em; color: #b7d5b8;">Click on any day below to open the dropdown and read the daily anchor verse and reflection.</p>
 </div>
 """,
     unsafe_allow_html=True,
 )
 
-# --- 30 DAY CHALLENGE DATA ---
+# --- 30 DAY CHALLENGE DATA (Single Verse + Commentary) ---
 challenge_days = [
     {
         "day": 1,
-        "topic": "Creation & Beginnings",
-        "verse": "Genesis 1:1-3",
+        "verse": "Genesis 1:1",
         "search_book": "Genesis",
         "chapter": 1,
+        "commentary": "Everything starts with God. Before the chaos of life or your daily worries, His creative hand was already establishing order and purpose for you.",
     },
     {
         "day": 2,
-        "topic": "The Fall & Promise",
-        "verse": "Genesis 3:15",
-        "search_book": "Genesis",
-        "chapter": 3,
+        "verse": "Psalm 23:1",
+        "search_book": "Psalms",
+        "chapter": 23,
+        "commentary": "You are never walking alone or forgotten. When you trust God as your shepherd, He actively provides for your needs and brings peace to your mind.",
     },
     {
         "day": 3,
-        "topic": "Faith of Abraham",
-        "verse": "Genesis 12:1-3",
-        "search_book": "Genesis",
-        "chapter": 12,
+        "verse": "Proverbs 3:5",
+        "search_book": "Proverbs",
+        "chapter": 3,
+        "commentary": "True peace comes from releasing the need to figure everything out on your own and leaning fully into God's infinite wisdom.",
     },
     {
         "day": 4,
-        "topic": "The Lord is My Shepherd",
-        "verse": "Psalm 23",
+        "verse": "Psalm 46:1",
         "search_book": "Psalms",
-        "chapter": 23,
+        "chapter": 46,
+        "commentary": "God is your ever-present refuge. When storms arise around you, you can run to His unchanging strength and find absolute safety.",
     },
     {
         "day": 5,
-        "topic": "Trust in the Lord",
-        "verse": "Proverbs 3:5-6",
+        "verse": "Proverbs 18:10",
         "search_book": "Proverbs",
-        "chapter": 3,
+        "chapter": 18,
+        "commentary": "The name of the Lord is a strong tower. Whenever fear or anxiety tries to creep in, call upon His name to find immediate shelter.",
     },
     {
         "day": 6,
-        "topic": "Awaiting the Savior",
-        "verse": "Isaiah 9:6",
-        "search_book": "Isaiah",
-        "chapter": 9,
+        "verse": "Psalm 119:105",
+        "search_book": "Psalms",
+        "chapter": 119,
+        "commentary": "His Word is a reliable lamp to guide your daily steps, illuminating the path right in front of you so you never have to guess your way.",
     },
     {
         "day": 7,
-        "topic": "The Birth of Jesus",
-        "verse": "Luke 2:1-14",
-        "search_book": "Luke",
-        "chapter": 2,
+        "verse": "Isaiah 41:10",
+        "search_book": "Isaiah",
+        "chapter": 41,
+        "commentary": "God commands you not to fear because He is personally with you, upholding you with His righteous right hand through every season.",
     },
     {
         "day": 8,
-        "topic": "The Sermon on the Mount",
-        "verse": "Matthew 5:1-12",
-        "search_book": "Matthew",
-        "chapter": 5,
+        "verse": "Isaiah 9:6",
+        "search_book": "Isaiah",
+        "chapter": 9,
+        "commentary": "Jesus came as our Wonderful Counselor and Prince of Peace, bringing everlasting comfort and stability to a restless world.",
     },
     {
         "day": 9,
-        "topic": "The Lord's Prayer",
-        "verse": "Matthew 6:9-13",
-        "search_book": "Matthew",
-        "chapter": 6,
+        "verse": "John 3:16",
+        "search_book": "John",
+        "chapter": 3,
+        "commentary": "This is the ultimate anchor of the Christian faith. God loved you so deeply that He gave His Son so you could have eternal life.",
     },
     {
         "day": 10,
-        "topic": "Seeking First His Kingdom",
         "verse": "Matthew 6:33",
         "search_book": "Matthew",
         "chapter": 6,
+        "commentary": "When you put God's kingdom and righteousness first, He promises to faithfully take care of all your daily needs.",
     },
     {
         "day": 11,
-        "topic": "The Good Samaritan",
-        "verse": "Luke 10:25-37",
-        "search_book": "Luke",
-        "chapter": 10,
+        "verse": "John 8:12",
+        "search_book": "John",
+        "chapter": 8,
+        "commentary": "Jesus is the light of the world. Anyone who follows Him will never walk in darkness, but will have the light of life.",
     },
     {
         "day": 12,
-        "topic": "The Prodigal Son",
-        "verse": "Luke 15:11-32",
-        "search_book": "Luke",
-        "chapter": 15,
+        "verse": "John 10:11",
+        "search_book": "John",
+        "chapter": 10,
+        "commentary": "The Good Shepherd willingly lays down His life for His sheep, proving the immense depth of His personal devotion to you.",
     },
     {
         "day": 13,
-        "topic": "God's Great Love",
-        "verse": "John 3:16-17",
+        "verse": "John 14:27",
         "search_book": "John",
-        "chapter": 3,
+        "chapter": 14,
+        "commentary": "Jesus gives a supernatural peace that the world cannot give, telling your heart not to be troubled or afraid.",
     },
     {
         "day": 14,
-        "topic": "The Bread of Life",
-        "verse": "John 6:35",
+        "verse": "John 15:5",
         "search_book": "John",
-        "chapter": 6,
+        "chapter": 15,
+        "commentary": "Staying connected to Christ is the secret to bearing fruit. Apart from Him, we cannot accomplish lasting spiritual work.",
     },
     {
         "day": 15,
-        "topic": "The True Vine",
-        "verse": "John 15:1-8",
-        "search_book": "John",
-        "chapter": 15,
-    },
-    {
-        "day": 16,
-        "topic": "The Fruit of the Spirit",
-        "verse": "Galatians 5:22-23",
-        "search_book": "Galatians",
-        "chapter": 5,
-    },
-    {
-        "day": 17,
-        "topic": "Faith Definition",
-        "verse": "Hebrews 11:1-3",
-        "search_book": "Hebrews",
-        "chapter": 11,
-    },
-    {
-        "day": 18,
-        "topic": "Armor of God",
-        "verse": "Ephesians 6:10-18",
-        "search_book": "Ephesians",
-        "chapter": 6,
-    },
-    {
-        "day": 19,
-        "topic": "Love is Patient",
-        "verse": "1 Corinthians 13:4-7",
-        "search_book": "1 Corinthians",
-        "chapter": 13,
-    },
-    {
-        "day": 20,
-        "topic": "Peace That Passes Understanding",
-        "verse": "Philippians 4:6-7",
-        "search_book": "Philippians",
-        "chapter": 4,
-    },
-    {
-        "day": 21,
-        "topic": "Strength in Weakness",
-        "verse": "Philippians 4:13",
-        "search_book": "Philippians",
-        "chapter": 4,
-    },
-    {
-        "day": 22,
-        "topic": "New Creation",
         "verse": "2 Corinthians 5:17",
         "search_book": "2 Corinthians",
         "chapter": 5,
+        "commentary": "In Christ, you are a brand new creation. Your past mistakes do not define you because the old has gone and the new has come.",
     },
     {
-        "day": 23,
-        "topic": "Saved by Grace",
-        "verse": "Ephesians 2:8-9",
+        "day": 16,
+        "verse": "Ephesians 2:8",
         "search_book": "Ephesians",
         "chapter": 2,
+        "commentary": "Salvation is a precious gift from God by grace through faith, meaning you don't have to earn His love through perfection.",
     },
     {
-        "day": 24,
-        "topic": "The Word of God",
-        "verse": "Hebrews 4:12",
-        "search_book": "Hebrews",
-        "chapter": 4,
+        "day": 17,
+        "verse": "Romans 8:1",
+        "search_book": "Romans",
+        "chapter": 8,
+        "commentary": "There is now zero condemnation for those who belong to Christ Jesus. You can walk free from guilt and shame.",
     },
     {
-        "day": 25,
-        "topic": "Drawing Near to God",
+        "day": 18,
+        "verse": "Galatians 5:22",
+        "search_book": "Galatians",
+        "chapter": 5,
+        "commentary": "Allow the Holy Spirit to cultivate beautiful fruit in your character, starting with love, joy, and peace.",
+    },
+    {
+        "day": 19,
+        "verse": "1 Corinthians 13:4",
+        "search_book": "1 Corinthians",
+        "chapter": 13,
+        "commentary": "Love is patient and kind. Choosing to love others the way Christ loves us transforms our everyday interactions.",
+    },
+    {
+        "day": 20,
         "verse": "James 4:8",
         "search_book": "James",
         "chapter": 4,
+        "commentary": "God invites you to draw near to Him. As you take a step toward Him in prayer, He promises to draw close to you.",
+    },
+    {
+        "day": 21,
+        "verse": "1 John 1:9",
+        "search_book": "1 John",
+        "chapter": 1,
+        "commentary": "God is completely faithful and just to forgive our sins and cleanse us from all unrighteousness whenever we come to Him honestly.",
+    },
+    {
+        "day": 22,
+        "verse": "Ephesians 6:10",
+        "search_book": "Ephesians",
+        "chapter": 6,
+        "commentary": "Be strong in the Lord and in His mighty power rather than relying on your own limited human strength.",
+    },
+    {
+        "day": 23,
+        "verse": "Philippians 4:6",
+        "search_book": "Philippians",
+        "chapter": 4,
+        "commentary": "Do not be anxious about anything. Instead, bring every single worry to God through prayer wrapped in a thankful heart.",
+    },
+    {
+        "day": 24,
+        "verse": "Philippians 4:13",
+        "search_book": "Philippians",
+        "chapter": 4,
+        "commentary": "You can face any challenge or obstacle that comes your way because Christ gives you the inner strength you need.",
+    },
+    {
+        "day": 25,
+        "verse": "Hebrews 4:12",
+        "search_book": "Hebrews",
+        "chapter": 4,
+        "commentary": "God's Word is alive and active, able to pierce through confusion and speak directly to the deepest thoughts of your heart.",
     },
     {
         "day": 26,
-        "topic": "A Chosen Generation",
-        "verse": "1 Peter 2:9",
-        "search_book": "1 Peter",
-        "chapter": 2,
+        "verse": "Hebrews 11:1",
+        "search_book": "Hebrews",
+        "chapter": 11,
+        "commentary": "Faith is the confident assurance in things we hope for and the deep conviction of things we cannot yet see.",
     },
     {
         "day": 27,
-        "topic": "Walking in the Light",
-        "verse": "1 John 1:5-7",
-        "search_book": "1 John",
-        "chapter": 1,
+        "verse": "1 Peter 2:9",
+        "search_book": "1 Peter",
+        "chapter": 2,
+        "commentary": "You are chosen, royal, and a treasured child of God, called out of darkness into His marvelous light.",
     },
     {
         "day": 28,
-        "topic": "God is Love",
-        "verse": "1 John 4:7-12",
-        "search_book": "1 John",
-        "chapter": 4,
+        "verse": "Romans 15:13",
+        "search_book": "Romans",
+        "chapter": 15,
+        "commentary": "May the God of hope fill you with all joy and peace as you trust in Him so that you overflow with hope.",
     },
     {
         "day": 29,
-        "topic": "The Alpha and Omega",
-        "verse": "Revelation 21:1-6",
+        "verse": "Revelation 21:4",
         "search_book": "Revelation",
         "chapter": 21,
+        "commentary": "God promises a future where He will wipe away every tear and pain will completely pass away.",
     },
     {
         "day": 30,
-        "topic": "Final Benediction",
-        "verse": "Revelation 22:20-21",
+        "verse": "Revelation 22:20",
         "search_book": "Revelation",
         "chapter": 22,
+        "commentary": "We live with eager, joyful expectation for the return of our Lord, resting securely in His eternal promises.",
     },
 ]
 
-# --- INITIALIZE SESSION STATE ---
-if "completed_days" not in st.session_state:
-    st.session_state.completed_days = {i: False for i in range(1, 31)}
-
-# --- PROGRESS BAR TRACKING ---
-completed_count = sum(st.session_state.completed_days.values())
-progress_percent = completed_count / 30
-
-st.subheader(f"Your Progress: {completed_count} / 30 Days Completed")
-st.progress(progress_percent)
-
-if completed_count == 30:
-    st.balloons()
-    st.success(
-        "🎉 **Praise God! You have completed the 30 Day Bible Challenge!**"
-    )
-
 st.markdown("---")
-st.markdown("### Daily Reading Checklist & Reader")
+st.markdown("### Daily Reading Guide")
 st.write(
-    "Check off each day as you read, and expand the box below any day to read the scripture right online:"
+    "Click on any day below to open the dropdown and read the daily verse and reflection:"
 )
 
-# --- DISPLAY CHECKLIST WITH EXPANDABLE VERSE READERS ---
+# --- DISPLAY STREAMLINED EXPANDABLE READERS ---
 for item in challenge_days:
     day_num = item["day"]
+    target_verse_ref = item["verse"]
 
-    col1, col2 = st.columns([0.1, 0.9])
+    with st.expander(f"Day {day_num} ({target_verse_ref})"):
+        # Display Commentary first for a warm devotional feel
+        st.markdown(f"*{item['commentary']}*")
+        st.markdown("---")
+        st.markdown(f"**Anchor Verse ({target_verse_ref}):**")
 
-    with col1:
-        is_checked = st.checkbox(
-            f"Day {day_num}",
-            value=st.session_state.completed_days[day_num],
-            key=f"day_{day_num}",
-            label_visibility="collapsed",
-        )
-        st.session_state.completed_days[day_num] = is_checked
+        # Pull exact verse text from KJV.csv
+        if df is not None and not df.empty:
+            # Parse book and chapter/verse from reference string (e.g., "Genesis 1:1")
+            parts = target_verse_ref.split(" ")
+            if len(parts) >= 2:
+                # Handle multi-word book names like "1 John" or "2 Corinthians"
+                if parts[0] in ["1", "2"] and len(parts) >= 3:
+                    b_name = f"{parts[0]} {parts[1]}"
+                    ref_rest = parts[2]
+                else:
+                    b_name = parts[0]
+                    ref_rest = parts[1]
 
-    with col2:
-        # Expandable dropdown for each individual day
-        with st.expander(
-            f"Day {day_num}: {item['topic']} — *{item['verse']}*"
-        ):
-            if df is not None and not df.empty:
-                b_name = item["search_book"]
-                c_num = item["chapter"]
+                chap_verse = ref_rest.split(":")
+                c_num = int(chap_verse[0])
 
-                # Filter CSV for the book and chapter
+                # Filter CSV
                 verses_to_show = df[
                     (df["Book"].str.contains(b_name, case=False, na=False))
                     & (df["Chapter"] == c_num)
                 ]
 
                 if not verses_to_show.empty:
-                    for _, row in verses_to_show.iterrows():
-                        v_num = row.get("Verse", row.get("verse", ""))
-                        v_text = row.get("Text", row.get("text", ""))
-                        st.markdown(
-                            f"<p><sup>{v_num}</sup> {v_text}</p>",
-                            unsafe_allow_html=True,
-                        )
+                    # If specific verse number exists, try to filter it
+                    if len(chap_verse) > 1:
+                        v_num_target = int(chap_verse[1].split("-")[0])
+                        specific_v = verses_to_show[
+                            verses_to_show["Verse"] == v_num_target
+                        ]
+                        if not specific_v.empty:
+                            for _, row in specific_v.iterrows():
+                                v_num = row.get("Verse", "")
+                                v_text = row.get("Text", "")
+                                st.markdown(
+                                    f"<p><sup>{v_num}</sup> {v_text}</p>",
+                                    unsafe_allow_html=True,
+                                )
+                        else:
+                            # Fallback to show chapter verses if exact match fails
+                            for _, row in verses_to_show.head(3).iterrows():
+                                v_num = row.get("Verse", "")
+                                v_text = row.get("Text", "")
+                                st.markdown(
+                                    f"<p><sup>{v_num}</sup> {v_text}</p>",
+                                    unsafe_allow_html=True,
+                                )
+                    else:
+                        for _, row in verses_to_show.head(3).iterrows():
+                            v_num = row.get("Verse", "")
+                            v_text = row.get("Text", "")
+                            st.markdown(
+                                f"<p><sup>{v_num}</sup> {v_text}</p>",
+                                unsafe_allow_html=True,
+                            )
                 else:
-                    st.info(f"Target reference: {item['verse']}")
+                    st.info(f"Reading reference: {target_verse_ref}")
             else:
-                st.info(
-                    f"Please verify KJV.csv is uploaded to view full text for {item['verse']}."
-                )
-
-# --- RESET BUTTON ---
-st.markdown("---")
-if st.button("Reset Challenge Progress"):
-    for k in st.session_state.completed_days:
-        st.session_state.completed_days[k] = False
-    st.rerun()
+                st.info(f"Reading reference: {target_verse_ref}")
+        else:
+            st.info(
+                f"Please verify KJV.csv is uploaded to view full text for {target_verse_ref}."
+            )
