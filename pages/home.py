@@ -1,37 +1,11 @@
 from datetime import datetime
 import pandas as pd
 import streamlit as st
+from styles import apply_global_styles  # <-- ADD THIS
 
-# --- PAGE CONFIGURATION & SIDEBAR TITLES ---
+# --- PAGE CONFIGURATION ---
 st.set_page_config(page_title="Mel's Goods", page_icon="📖", layout="centered")
-
-# --- CUSTOM CSS (FOREST CABIN THEME) ---
-st.markdown(
-    """
-    <style>
-    .stApp {
-        background-color: #1b261c;
-        color: #f4f1ea;
-    }
-    .header-box {
-        background-color: #2b3a2a;
-        padding: 30px;
-        border-radius: 10px;
-        text-align: center;
-        border: 1px solid #4a6b4e;
-        margin-bottom: 25px;
-    }
-    .card {
-        background-color: #2b3a2a;
-        padding: 20px;
-        border-radius: 10px;
-        border: 1px solid #4a6b4e;
-        margin-bottom: 20px;
-    }
-    </style>
-""",
-    unsafe_allow_html=True,
-)
+apply_global_styles()  # <-- ADD THIS
 
 
 # --- LOAD BIBLE DATA ---
