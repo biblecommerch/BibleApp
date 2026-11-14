@@ -48,6 +48,10 @@ st.markdown(
     [data-testid="stExpander"] div[data-baseweb="accordion"] {
         background-color: #2b3a2a !important;
     }
+    /* Tighten spacing inside expanders */
+    [data-testid="stExpander"] [data-testid="stVerticalBlock"] {
+        gap: 0rem !important;
+    }
     </style>
 """,
     unsafe_allow_html=True,
@@ -350,7 +354,7 @@ for item in challenge_days:
                                 v_num = row.get("Verse", "")
                                 v_text = row.get("Text", "")
                                 st.markdown(
-                                    f"<p><sup>{v_num}</sup> {v_text}</p>",
+                                    f"<p style='margin-bottom: 2px;'><sup>{v_num}</sup> {v_text}</p>",
                                     unsafe_allow_html=True,
                                 )
                         else:
@@ -358,7 +362,7 @@ for item in challenge_days:
                                 v_num = row.get("Verse", "")
                                 v_text = row.get("Text", "")
                                 st.markdown(
-                                    f"<p><sup>{v_num}</sup> {v_text}</p>",
+                                    f"<p style='margin-bottom: 2px;'><sup>{v_num}</sup> {v_text}</p>",
                                     unsafe_allow_html=True,
                                 )
                     else:
@@ -366,7 +370,7 @@ for item in challenge_days:
                             v_num = row.get("Verse", "")
                             v_text = row.get("Text", "")
                             st.markdown(
-                                f"<p><sup>{v_num}</sup> {v_text}</p>",
+                                f"<p style='margin-bottom: 2px;'><sup>{v_num}</sup> {v_text}</p>",
                                 unsafe_allow_html=True,
                             )
                 else:
@@ -378,8 +382,14 @@ for item in challenge_days:
                 f"Please verify KJV.csv is uploaded to view full text for {target_verse_ref}."
             )
 
-        # 2. Divider line
-        st.markdown("---")
+        # 2. Divider line with tighter margin
+        st.markdown(
+            "<hr style='margin-top: 5px; margin-bottom: 10px; border-color: #4a6b4e;'>",
+            unsafe_allow_html=True,
+        )
 
         # 3. Commentary LAST
-        st.markdown(f"*{item['commentary']}*")
+        st.markdown(
+            f"<p style='margin-bottom: 0px;'><em>{item['commentary']}</em></p>",
+            unsafe_allow_html=True,
+        )
