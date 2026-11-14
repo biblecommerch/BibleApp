@@ -29,6 +29,25 @@ st.markdown(
         border: 1px solid #4a6b4e;
         margin-bottom: 20px;
     }
+    /* Fix Streamlit expander container and header colors */
+    [data-testid="stExpander"] {
+        background-color: #2b3a2a !important;
+        border: 1px solid #4a6b4e !important;
+        border-radius: 10px;
+        margin-bottom: 10px;
+    }
+    [data-testid="stExpander"] summary {
+        background-color: #2b3a2a !important;
+    }
+    [data-testid="stExpander"] details summary p, 
+    [data-testid="stExpander"] summary span {
+        color: #f4f1ea !important;
+        font-weight: 600;
+    }
+    /* Fix open expander background */
+    [data-testid="stExpander"] div[data-baseweb="accordion"] {
+        background-color: #2b3a2a !important;
+    }
     </style>
 """,
     unsafe_allow_html=True,
