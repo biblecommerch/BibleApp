@@ -1,8 +1,16 @@
+# --- IMPORTS & DEPENDENCIES ---
 from datetime import datetime
 import re
 import pandas as pd
 import streamlit as st
 from styles import apply_global_styles
+
+# Import our custom auth helper to handle sidebar login and Supabase database saves
+from auth_helper import render_sidebar_auth, require_email_to_save, get_supabase
+
+# --- SIDEBAR ACCOUNT & SITE UPDATES MANAGER ---
+# Renders the email login/status box in the left sidebar on every page
+render_sidebar_auth()
 
 # --- PAGE CONFIGURATION ---
 st.set_page_config(page_title="Bible Focus", page_icon="📖", layout="centered")
