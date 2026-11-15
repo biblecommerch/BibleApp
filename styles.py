@@ -190,15 +190,23 @@ def apply_global_styles():
             border-bottom-color: var(--brand-accent) !important;
         }
 
-        /* =================================================================
-           13. INPUT FIELDS & DROPDOWNS
-           Gives search boxes and select dropdowns rounded silver borders.
-           ================================================================= */
-        div[data-baseweb="input"] > div, div[data-baseweb="select"] > div {
-            border-radius: 10px !important;
-            border-color: var(--brand-silver) !important;
-            background-color: #FFFFFF !important;
-        }
+/* =================================================================
+   13. INPUT FIELDS & DROPDOWNS (Global Styling)
+   ================================================================ */
+div[data-baseweb="input"] > div, 
+div[data-baseweb="select"] > div {
+    border-radius: 10px !important;
+    border-color: var(--brand-silver) !important;
+    background-color: #FFFFFF !important;
+    box-shadow: 0 2px 6px rgba(38, 78, 73, 0.04) !important;
+}
+
+/* Style the dropdown label text globally so it's always clear and bold */
+[data-testid="stSelectbox"] label {
+    font-weight: 600 !important;
+    color: var(--brand-primary) !important;
+    font-size: 0.95rem !important;
+}
 
         /* =================================================================
            14. HORIZONTAL SECTION DIVIDERS
