@@ -191,21 +191,21 @@ def apply_global_styles():
         }
 
 /* =================================================================
-   13. INPUT FIELDS & DROPDOWNS (Global Styling)
+   13. INPUT FIELDS & DROPDOWNS
    ================================================================ */
-div[data-baseweb="input"] > div, 
-div[data-baseweb="select"] > div {
+/* Target Streamlit's select box container directly */
+div[data-baseweb="select"] {
     border-radius: 10px !important;
-    border-color: var(--brand-silver) !important;
+    border: 1px solid #264E49 !important;
     background-color: #FFFFFF !important;
-    box-shadow: 0 2px 6px rgba(38, 78, 73, 0.04) !important;
 }
 
-/* Style the dropdown label text globally so it's always clear and bold */
+/* Style the label above every select box globally */
+div[data-testid="stSelectbox"] label p,
 [data-testid="stSelectbox"] label {
-    font-weight: 600 !important;
-    color: var(--brand-primary) !important;
-    font-size: 0.95rem !important;
+    font-weight: 700 !important;
+    color: #264E49 !important;
+    font-size: 1.05rem !important;
 }
 
         /* =================================================================
