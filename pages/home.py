@@ -8,13 +8,13 @@ from styles import apply_global_styles
 # Import our custom auth helper to handle sidebar login and Supabase database saves
 from auth_helper import render_sidebar_auth, require_email_to_save, get_supabase
 
-# --- SIDEBAR ACCOUNT & SITE UPDATES MANAGER ---
-# Renders the email login/status box in the left sidebar on every page
-render_sidebar_auth()
-
 # --- PAGE CONFIGURATION ---
 st.set_page_config(page_title="Bible Focus", page_icon="📖", layout="centered")
 apply_global_styles()
+
+# --- SIDEBAR ACCOUNT & SITE UPDATES MANAGER ---
+# Renders the email login/status box in the left sidebar on every page
+render_sidebar_auth()
 
 # --- LOAD BIBLE DATA & TRANSLATION MAP ---
 # Dictionary connecting the dropdown labels to your exact CSV filenames in GitHub
