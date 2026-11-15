@@ -237,7 +237,7 @@ def get_verse_text(book_name, chap_num, verse_num):
     v_col = "Verse" if "Verse" in df.columns else "verse"
     t_col = "Text" if "Text" in df.columns else "text"
     hit = df[
-        (df[b_col].astype(str).str.lower() == book_name.lower())
+        (df[b_col].astype(str).str.lower().isin([book_name.lower(), book_name.lower() + "s"]))
         & (df[c_col].astype(int) == chap_num)
         & (df[v_col].astype(int) == verse_num)
     ]
