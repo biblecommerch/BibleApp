@@ -388,28 +388,64 @@ with st.container(border=True):
     st.image(img_url, caption=img_caption, use_container_width=True)
     st.button("Explore Full Interactive Atlas (Coming Soon)", disabled=True, use_container_width=True)
 
-# ==========================================
+# ========================================== #
 # 11. TOP BLOGS & EMAIL NEWSLETTER
-# ==========================================
+# ========================================== #
 st.markdown("---")
+
+# Split the section into two columns: one for the blog link, one for the newsletter signup
 blog_col, news_col = st.columns(2)
 
+# --- LEFT COLUMN: TOP BLOGS ---
 with blog_col:
     with st.container(border=True):
+        # Header and description for the blog section
         st.markdown("### ✍️ Top Blogs")
         st.write("Read featured articles, devotions, and reader discussions on Bible Com Blog.")
+        
+        # Link button directing users to the external blog site
         st.link_button("Visit Bible Com Blog", "https://www.biblecomblog.com", use_container_width=True)
 
+# --- RIGHT COLUMN: EMAIL NEWSLETTER (SUPABASE CONNECTED) ---
 with news_col:
     with st.container(border=True):
+        # Header and description for the newsletter box
         st.markdown("### ✉️ Join Email Newsletter")
         st.write("Stay updated with daily verses, new studies, and site additions.")
-        email_input = st.text_input("Your Email Address:", placeholder="you@example.com", label_visibility="collapsed")
-        if st.button("Stay Updated", use_container_width=True):
-            if email_input:
-                st.success("Thanks for subscribing! *(Placeholder — connect email service later)*")
+        
+        # Text input box where visitors type their email address
+        newsletter_email = st.text_input(
+            "Your Email Address:", 
+            placeholder="you@example.com", 
+            label_visibility="collapsed", 
+            key="home_newsletter_input"
+        )
+        
+        # When the user clicks 'Stay Updated', this code executes
+        if st.button("Stay Updated", use_container_width=True, key="home_newsletter_submit"):
+            # Ensure the user entered a valid email address containing an '@' sign
+            if newsletter_email and "@" in newsletter_email:
+                try:
+                    # Fetch the cached Supabase database connection
+                    db = get_supabase()
+                    
+                    # Upsert (insert or update) the email into your Supabase 'users' table
+                    db.table("users").upsert({
+                        "email": newsletter_email,
+                        "site_updates": True
+                    }).execute()
+                    
+                    # Save email to session state so they are recognized site-wide
+                    st.session_state["user_email"] = newsletter_email
+                    
+                    # Display a success confirmation to the visitor
+                    st.success("🎉 You're on the list! We'll notify you when new features drop.")
+                except Exception as e:
+                    # Catch and show any database errors if they occur
+                    st.error("Could not save email. Please try again.")
             else:
-                st.warning("Please enter an email address first.")
+                # Show a warning if the email box is blank or invalid
+                st.warning("Please enter a valid email address.")
 
 # ==========================================
 # 12. EXPLORE MORE BIBLE FOCUS PAGES
