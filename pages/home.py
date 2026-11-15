@@ -508,10 +508,15 @@ with st.container(border=True):
 # ==========================================
 # 14. SITE FOOTER
 # ==========================================
+# Draws a clean horizontal divider line above the footer
 st.markdown("---")
+
+# Renders the centered HTML footer block (unsafe_allow_html=True allows custom styling and links)
 st.markdown(
     f"""
     <div style="text-align: center; padding: 1.5rem 0 2rem 0; font-size: 0.9rem; opacity: 0.85;">
+        
+        <!-- Top Row: Site Navigation & Quick Jump Links -->
         <p style="margin-bottom: 0.5rem;">
             <strong>Bible Focus</strong> &nbsp;|&nbsp;
             <a href="#bible-focus" style="text-decoration: none;">Home</a> &nbsp;•&nbsp;
@@ -522,14 +527,20 @@ st.markdown(
             <a href="#explore-more-bible-focus-pages" style="text-decoration: none;">My Mission</a> &nbsp;•&nbsp;
             <a href="#explore-more-bible-focus-pages" style="text-decoration: none;">Contact</a>
         </p>
+
+        <!-- Second Row: Dynamic Bible Translation Credit (updates automatically based on user's selected version) -->
         <p style="margin-bottom: 0.5rem; font-size: 0.85rem;">
             Scripture quotations are from the {version} — Public Domain.
         </p>
+
+        <!-- Third Row: Legal Pages & Store Link (Privacy Policy routes directly to /privacy in the same tab) -->
         <p style="margin-bottom: 0.5rem; font-size: 0.85rem;">
-            <a href="#explore-more-bible-focus-pages" style="text-decoration: none;">Privacy Policy</a> &nbsp;|&nbsp;
+            <a href="/privacy" target="_self" style="text-decoration: none;">Privacy Policy</a> &nbsp;|&nbsp;
             <a href="#explore-more-bible-focus-pages" style="text-decoration: none;">Terms of Use</a> &nbsp;|&nbsp;
             <a href="https://www.ebay.com/sch/i.html?_dkr=1&iconV2Request=true&_blrs=recall_filtering&_ssn=mels_goods&store_name=shopmelsgoods&_oac=1&store_cat=49634617018" target="_blank" style="text-decoration: none;">Support via Mel's Goods</a>
         </p>
+
+        <!-- Bottom Row: Copyright Notice -->
         <p style="margin: 0; font-size: 0.8rem; opacity: 0.7;">
             © 2026 Bible Focus. All rights reserved.
         </p>
