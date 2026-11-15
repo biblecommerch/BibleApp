@@ -199,10 +199,13 @@ div[data-baseweb="select"] {
     background-color: #FFFFFF !important;
 }
 
-/* Force the active/focus state to use your Deep Teal brand color instead of red */
-div[data-baseweb="select"]:focus-within,
-div[data-baseweb="select"] div:focus,
-div[data-baseweb="select"]:active {
+/* Target Streamlit's inner interactive selection box to clear out the default red/orange focus ring */
+div[data-baseweb="select"] > div {
+    border-color: transparent !important;
+    box-shadow: none !important;
+}
+
+div[data-baseweb="select"]:focus-within {
     border-color: var(--brand-primary) !important;
     box-shadow: 0 0 0 2px rgba(38, 78, 73, 0.15) !important;
 }
