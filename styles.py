@@ -199,12 +199,6 @@ div[data-baseweb="select"] {
     background-color: #FFFFFF !important;
 }
 
-/* Change the clicked/focus border and glow to match your Warm Bronze accent */
-div[data-baseweb="select"]:focus-within {
-    border-color: var(--brand-accent) !important;
-    box-shadow: 0 0 0 2px rgba(156, 122, 76, 0.25) !important;
-}
-
 /* Style the label above every select box globally */
 div[data-testid="stSelectbox"] label p,
 [data-testid="stSelectbox"] label {
