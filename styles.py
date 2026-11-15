@@ -193,18 +193,18 @@ def apply_global_styles():
 /* =================================================================
    13. INPUT FIELDS & DROPDOWNS
    ================================================================ */
-/* Target Streamlit's select box container and remove default focus color */
 div[data-baseweb="select"] {
     border-radius: 10px !important;
     border: 1px solid var(--brand-primary) !important;
     background-color: #FFFFFF !important;
 }
 
-/* Override the active/focus state so it doesn't turn red */
+/* Force the active/focus state to use your Deep Teal brand color instead of red */
 div[data-baseweb="select"]:focus-within,
-div[data-baseweb="select"] div:focus {
-    border-color: var(--brand-accent) !important;
-    box-shadow: 0 0 0 2px rgba(156, 122, 76, 0.2) !important;
+div[data-baseweb="select"] div:focus,
+div[data-baseweb="select"]:active {
+    border-color: var(--brand-primary) !important;
+    box-shadow: 0 0 0 2px rgba(38, 78, 73, 0.15) !important;
 }
 
 /* Style the label above every select box globally */
