@@ -8,15 +8,15 @@ def apply_global_styles():
         @import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700;1,400&family=Inter:wght@400;500;600&display=swap');
 
         :root {
-            --brand-mauve: #9a6a70;
-            --brand-mauve-dark: #7d5358;
-            --brand-mauve-soft: rgba(154, 106, 112, 0.10);
-            --brand-silver: #B8BFC6;
+            --brand-primary: #3A4652;
+            --brand-primary-dark: #28313B;
+            --brand-primary-soft: rgba(58, 70, 82, 0.08);
+            --brand-silver: #A8B1BA;
             --brand-silver-light: #D5DBE0;
             --bg-parchment: #FAF7F2;
             --bg-linen: #F2ECE1;
-            --text-ink: #2C2A29;
-            --text-muted: #6E655F;
+            --text-ink: #2C2F33;
+            --text-muted: #626A73;
         }
 
         .stApp {
@@ -25,9 +25,10 @@ def apply_global_styles():
             font-family: 'Inter', sans-serif;
         }
 
+        /* Headings in Deep Slate Charcoal */
         h1, h2, h3, h4 {
             font-family: 'Lora', serif !important;
-            color: var(--brand-mauve) !important;
+            color: var(--brand-primary) !important;
             letter-spacing: -0.01em;
         }
 
@@ -39,6 +40,7 @@ def apply_global_styles():
             color: var(--text-ink) !important;
         }
 
+        /* Hero Header Box with Brushed Silver Top Accent */
         .header-box {
             background: linear-gradient(145deg, #FFFFFF 0%, #F5EFE6 100%);
             padding: 38px 28px;
@@ -46,7 +48,7 @@ def apply_global_styles():
             text-align: center;
             border: 1px solid var(--brand-silver-light);
             border-top: 5px solid var(--brand-silver);
-            box-shadow: 0 8px 24px rgba(44, 42, 41, 0.06);
+            box-shadow: 0 8px 24px rgba(44, 47, 51, 0.06);
             margin-bottom: 28px;
         }
         .header-box h1 {
@@ -58,40 +60,43 @@ def apply_global_styles():
             font-size: 1.05rem;
         }
 
+        /* Content Cards with Slate Left Accent & Silver Border */
         .card {
             background-color: #FFFFFF;
             padding: 26px 28px;
             border-radius: 14px;
             border: 1px solid var(--brand-silver-light);
-            border-left: 5px solid var(--brand-mauve);
-            box-shadow: 0 6px 18px rgba(44, 42, 41, 0.05);
+            border-left: 5px solid var(--brand-primary);
+            box-shadow: 0 6px 18px rgba(44, 47, 51, 0.05);
             margin-bottom: 22px;
             color: var(--text-ink);
         }
         .card p {
-            color: #4A4542 !important;
+            color: #3E444A !important;
             line-height: 1.65;
         }
 
+        /* Bordered Containers with Brushed Silver Top Trim */
         [data-testid="stVerticalBlockBorderWrapper"] > div {
             background-color: #FFFFFF !important;
             border: 1px solid var(--brand-silver-light) !important;
             border-top: 3px solid var(--brand-silver) !important;
             border-radius: 14px !important;
-            box-shadow: 0 4px 14px rgba(44, 42, 41, 0.04) !important;
+            box-shadow: 0 4px 14px rgba(44, 47, 51, 0.04) !important;
         }
 
+        /* Buttons in Deep Slate */
         .stButton > button, .stLinkButton > a {
             background-color: #FFFFFF !important;
-            color: var(--brand-mauve) !important;
-            border: 1.5px solid var(--brand-mauve) !important;
+            color: var(--brand-primary) !important;
+            border: 1.5px solid var(--brand-primary) !important;
             border-radius: 10px !important;
             font-weight: 600 !important;
         }
         .stButton > button:hover, .stLinkButton > a:hover {
-            background-color: var(--brand-mauve) !important;
+            background-color: var(--brand-primary) !important;
             color: #FFFFFF !important;
-            border-color: var(--brand-mauve) !important;
+            border-color: var(--brand-primary) !important;
         }
 
         .stButton > button:disabled {
@@ -101,6 +106,7 @@ def apply_global_styles():
             opacity: 0.85 !important;
         }
 
+        /* Topic Pills */
         [data-testid="stPills"] button {
             border-radius: 999px !important;
             border: 1px solid var(--brand-silver) !important;
@@ -108,14 +114,18 @@ def apply_global_styles():
             color: var(--text-ink) !important;
         }
         [data-testid="stPills"] button[aria-pressed="true"] {
-            background-color: var(--brand-mauve) !important;
-            border-color: var(--brand-mauve) !important;
+            background-color: var(--brand-primary) !important;
+            border-color: var(--brand-primary) !important;
             color: #FFFFFF !important;
         }
 
+        /* Active Tab Underline */
+        button[data-baseweb="tab"] {
+            color: var(--text-muted) !important;
+        }
         button[data-baseweb="tab"][aria-selected="true"] {
-            color: var(--brand-mauve) !important;
-            border-bottom-color: var(--brand-mauve) !important;
+            color: var(--brand-primary) !important;
+            border-bottom-color: var(--brand-primary) !important;
         }
 
         div[data-baseweb="input"] > div, div[data-baseweb="select"] > div {
@@ -124,6 +134,7 @@ def apply_global_styles():
             background-color: #FFFFFF !important;
         }
 
+        /* Silver Gradient Dividers */
         hr {
             border: 0 !important;
             height: 1px !important;
@@ -132,7 +143,7 @@ def apply_global_styles():
         }
 
         a {
-            color: var(--brand-mauve) !important;
+            color: var(--brand-primary) !important;
         }
         </style>
         """,
