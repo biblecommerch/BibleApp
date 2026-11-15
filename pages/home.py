@@ -274,3 +274,37 @@ with st.container(border=True):
         "https://www.ebay.com/sch/i.html?_dkr=1&iconV2Request=true&_blrs=recall_filtering&_ssn=mels_goods&store_name=shopmelsgoods&_oac=1&store_cat=49634617018",
         use_container_width=False,
     )
+
+
+# ==========================================
+# 11. SITE FOOTER
+# ==========================================
+st.markdown("---")
+st.markdown(
+    """
+    <div style="text-align: center; padding: 1.5rem 0 2rem 0; font-size: 0.9rem; opacity: 0.85;">
+        <p style="margin-bottom: 0.5rem;">
+            <strong>Bible Focus</strong> &nbsp;|&nbsp;
+            <a href="#bible-focus" style="text-decoration: none;">Home</a> &nbsp;•&nbsp;
+            <a href="#bible-search" style="text-decoration: none;">Bible Search</a> &nbsp;•&nbsp;
+            <a href="#explore-bible-focus-pages" style="text-decoration: none;">Research &amp; Study</a> &nbsp;•&nbsp;
+            <a href="https://www.biblecomblog.com" target="_blank" style="text-decoration: none;">Blog</a> &nbsp;•&nbsp;
+            <a href="#explore-bible-focus-pages" style="text-decoration: none;">Prayer</a> &nbsp;•&nbsp;
+            <a href="#explore-bible-focus-pages" style="text-decoration: none;">My Mission</a> &nbsp;•&nbsp;
+            <a href="#explore-bible-focus-pages" style="text-decoration: none;">Contact</a>
+        </p>
+        <p style="margin-bottom: 0.5rem; font-size: 0.85rem;">
+            Scripture quotations are from the King James Version (KJV) — Public Domain.
+        </p>
+        <p style="margin-bottom: 0.5rem; font-size: 0.85rem;">
+            <a href="#explore-bible-focus-pages" style="text-decoration: none;">Privacy Policy</a> &nbsp;|&nbsp;
+            <a href="#explore-bible-focus-pages" style="text-decoration: none;">Terms of Use</a> &nbsp;|&nbsp;
+            <a href="https://www.ebay.com/sch/i.html?_dkr=1&iconV2Request=true&_blrs=recall_filtering&_ssn=mels_goods&store_name=shopmelsgoods&_oac=1&store_cat=49634617018" target="_blank" style="text-decoration: none;">Support via Mel's Goods</a>
+        </p>
+        <p style="margin: 0; font-size: 0.8rem; opacity: 0.7;">
+            © 2026 Bible Focus. All rights reserved.
+        </p>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
