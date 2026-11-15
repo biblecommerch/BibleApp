@@ -199,15 +199,10 @@ div[data-baseweb="select"] {
     background-color: #FFFFFF !important;
 }
 
-/* Target Streamlit's inner interactive selection box to clear out the default red/orange focus ring */
-div[data-baseweb="select"] > div {
-    border-color: transparent !important;
-    box-shadow: none !important;
-}
-
+/* Change the clicked/focus border and glow to match your Warm Bronze accent */
 div[data-baseweb="select"]:focus-within {
-    border-color: var(--brand-primary) !important;
-    box-shadow: 0 0 0 2px rgba(38, 78, 73, 0.15) !important;
+    border-color: var(--brand-accent) !important;
+    box-shadow: 0 0 0 2px rgba(156, 122, 76, 0.25) !important;
 }
 
 /* Style the label above every select box globally */
