@@ -8,15 +8,28 @@ from styles import apply_global_styles
 st.set_page_config(page_title="Bible Focus", page_icon="📖", layout="centered")
 apply_global_styles()
 
-# --- LOAD BIBLE DATA ---
+# --- LOAD BIBLE DATA & TRANSLATION MAP ---
+# Dictionary connecting the dropdown labels to your exact CSV filenames in GitHub
+TRANSLATIONS = {
+    "KJV (King James Version)": "KJV.csv",
+    "ASV (American Standard Version)": "ASV.csv",
+    "BSB (Berean Standard Bible)": "BSB.csv",
+    "YLT (Young's Literal Translation)": "YLT.csv",
+    "BBE (Bible in Basic English)": "BBE.csv",
+    "DRC (Douay-Rheims Catholic Bible)": "DRC.csv",
+}
+
 @st.cache_data
-def load_bible_data():
+def load_bible_data(csv_filename):
+    """
+    Loads the chosen Bible CSV into memory once and caches it.
+    Switching versions later will be instant because it won't re-read from disk.
+    """
     try:
-        return pd.read_csv("KJV.csv")
+        return pd.read_csv(csv_filename)
     except Exception:
         return None
 
-df = load_bible_data()
 
 # ==========================================
 # 1. HEADER & BIBLE VERSIONS
@@ -31,19 +44,34 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+# Remember the user's chosen translation across pages using st.session_state
+if "selected_version" not in st.session_state:
+    st.session_state.selected_version = "KJV (King James Version)"
+
 ver_col1, ver_col2, ver_col3 = st.columns([1, 2, 1])
 with ver_col2:
     version = st.selectbox(
         "Select Bible Translation:",
-        ["KJV (King James Version)", "NKJV (Coming Soon)", "ESV (Coming Soon)", "NIV (Coming Soon)"],
-        index=0,
+        options=list(TRANSLATIONS.keys()),
+        index=list(TRANSLATIONS.keys()).index(st.session_state.selected_version),
     )
+
+# Save the user's latest pick and extract the short code (e.g., "KJV", "BSB", "ASV")
+st.session_state.selected_version = version
+ver_code = version.split(" ")[0]
+
+# Load ONLY the selected translation into 'df' so the entire page uses it
+df = load_bible_data(TRANSLATIONS[version])
+
 
 # ==========================================
 # 2. DAILY VERSE + COMMENTARY / ENCOURAGEMENT
 # ==========================================
 st.markdown("### ✨ Daily Verse")
+
 if df is not None and not df.empty:
+    # Uses the day of the year (1-365) so everyone sees the same verse today,
+    # automatically translated into whichever version they picked above.
     day_of_year = datetime.now().timetuple().tm_yday
     verse_index = day_of_year % len(df)
     daily_row = df.iloc[verse_index]
@@ -51,11 +79,12 @@ if df is not None and not df.empty:
     chapter = daily_row.get("Chapter", daily_row.get("chapter", ""))
     verse_num = daily_row.get("Verse", daily_row.get("verse", ""))
     text = daily_row.get("Text", daily_row.get("text", ""))
+
     st.markdown(
         f"""
         <div class="card">
             <p style="font-size: 1.15em;"><b>"{text}"</b></p>
-            <p style="margin-bottom: 12px;">— {book} {chapter}:{verse_num} (KJV)</p>
+            <p style="margin-bottom: 12px;">— {book} {chapter}:{verse_num} ({ver_code})</p>
             <hr style="border: 0; border-top: 1px solid #E2D9C8; margin: 10px 0;">
             <p style="margin: 0; font-size: 0.95em;">
                 <b>Daily Reflection &amp; Encouragement:</b> Every passage of Scripture reminds us of God's faithfulness 
@@ -82,13 +111,16 @@ else:
         unsafe_allow_html=True,
     )
 
+
 # ==========================================
 # 3. DUAL BIBLE SEARCH (PASSAGE + KEYWORD)
 # ==========================================
 st.markdown("---")
 st.subheader("🔍 Bible Search")
 
-search_tab1, search_tab2 = st.tabs(["📖 Passage / Verse Lookup (e.g., Romans 8:28)", "🔎 Keyword & Phrase Search"])
+search_tab1, search_tab2 = st.tabs(
+    ["📖 Passage / Verse Lookup (e.g., Romans 8:28)", "🔎 Keyword & Phrase Search"]
+)
 
 with search_tab1:
     passage_input = st.text_input(
@@ -117,39 +149,36 @@ with search_tab1:
                         f"""
                         <div class="card">
                             <p style="font-size: 1.1em;"><b>"{row[text_col]}"</b></p>
-                            <p style="margin: 0;">— {row[book_col]} {row[chap_col]}:{row[verse_col]} (KJV)</p>
+                            <p style="margin: 0;">— {row[book_col]} {row[chap_col]}:{row[verse_col]} ({ver_code})</p>
                         </div>
                         """,
                         unsafe_allow_html=True,
                     )
                 else:
-                    st.warning(f"Could not find '{passage_input}'. Check the book spelling and verse number.")
+                    st.warning(f"Could not find '{passage_input}' in {ver_code}. Check the book spelling and verse number.")
             else:
                 st.info("Tip: Use the format **Book Chapter:Verse** (for example: `Romans 8:28`).")
         else:
-            st.error("Bible dataset (KJV.csv) could not be loaded.")
+            st.error(f"Bible dataset ({TRANSLATIONS[version]}) could not be loaded.")
 
 with search_tab2:
     keyword_input = st.text_input(
-        "Search by word or phrase across the entire KJV Bible:",
+        f"Search by word or phrase across the entire {ver_code} Bible:",
         placeholder="e.g., all things work together, peace, grace...",
         key="keyword_lookup",
     )
     if keyword_input:
         if df is not None and not df.empty:
-            results = df[
-                df.apply(
-                    lambda row: row.astype(str).str.contains(keyword_input, case=False).any(),
-                    axis=1,
-                )
-            ]
+            # Searches inside the Text column of whichever translation is currently active
+            text_col = "Text" if "Text" in df.columns else "text"
+            results = df[df[text_col].astype(str).str.contains(keyword_input, case=False, na=False)]
             if not results.empty:
-                st.success(f"Found {len(results)} matching verse(s):")
+                st.success(f"Found {len(results)} matching verse(s) in {ver_code}:")
                 st.dataframe(results, use_container_width=True)
             else:
-                st.warning(f"No verses found matching '{keyword_input}'.")
+                st.warning(f"No verses found matching '{keyword_input}' in {ver_code}.")
         else:
-            st.error("Bible dataset (KJV.csv) could not be loaded.")
+            st.error(f"Bible dataset ({TRANSLATIONS[version]}) could not be loaded.")
 
 # ==========================================
 # 4. OLD & NEW TESTAMENT DIRECTORIES
@@ -199,24 +228,35 @@ if selected_topic:
 # ==========================================
 st.markdown("---")
 st.subheader("📌 Popular Verses")
+# Helper function to pull a single verse cleanly from the active 'df'
+def get_verse_text(book_name, chap_num, verse_num):
+    if df is None or df.empty:
+        return ""
+    b_col = "Book" if "Book" in df.columns else "book"
+    c_col = "Chapter" if "Chapter" in df.columns else "chapter"
+    v_col = "Verse" if "Verse" in df.columns else "verse"
+    t_col = "Text" if "Text" in df.columns else "text"
+    hit = df[
+        (df[b_col].astype(str).str.lower() == book_name.lower())
+        & (df[c_col].astype(int) == chap_num)
+        & (df[v_col].astype(int) == verse_num)
+    ]
+    return hit.iloc[0][t_col] if not hit.empty else ""
+
 with st.container(border=True):
     pop_col1, pop_col2 = st.columns(2)
     with pop_col1:
-        st.markdown(
-            """
-            * **Romans 8:28** — *And we know that all things work together for good...*
-            * **John 3:16** — *For God so loved the world, that he gave his only begotten Son...*
-            * **Philippians 4:13** — *I can do all things through Christ which strengtheneth me.*
-            """
-        )
+        st.markdown(f"""
+        * **Romans 8:28** — *{get_verse_text("Romans", 8, 28)}*
+        * **John 3:16** — *{get_verse_text("John", 3, 16)}*
+        * **Philippians 4:13** — *{get_verse_text("Philippians", 4, 13)}*
+        """)
     with pop_col2:
-        st.markdown(
-            """
-            * **Jeremiah 29:11** — *For I know the thoughts that I think toward you...*
-            * **Psalm 23:1** — *The LORD is my shepherd; I shall not want.*
-            * **Proverbs 3:5–6** — *Trust in the LORD with all thine heart...*
-            """
-        )
+        st.markdown(f"""
+        * **Jeremiah 29:11** — *{get_verse_text("Jeremiah", 29, 11)}*
+        * **Psalm 23:1** — *{get_verse_text("Psalm", 23, 1)}*
+        * **Proverbs 3:5** — *{get_verse_text("Proverbs", 3, 5)}*
+        """)
     st.button("Explore Full Popular Verses Collection (Coming Soon)", disabled=True, use_container_width=True)
 
 # ==========================================
@@ -426,7 +466,7 @@ with st.container(border=True):
 # ==========================================
 st.markdown("---")
 st.markdown(
-    """
+    f"""
     <div style="text-align: center; padding: 1.5rem 0 2rem 0; font-size: 0.9rem; opacity: 0.85;">
         <p style="margin-bottom: 0.5rem;">
             <strong>Bible Focus</strong> &nbsp;|&nbsp;
@@ -439,7 +479,7 @@ st.markdown(
             <a href="#explore-more-bible-focus-pages" style="text-decoration: none;">Contact</a>
         </p>
         <p style="margin-bottom: 0.5rem; font-size: 0.85rem;">
-            Scripture quotations are from the King James Version (KJV) — Public Domain.
+            Scripture quotations are from the {version} — Public Domain.
         </p>
         <p style="margin-bottom: 0.5rem; font-size: 0.85rem;">
             <a href="#explore-more-bible-focus-pages" style="text-decoration: none;">Privacy Policy</a> &nbsp;|&nbsp;
