@@ -9,7 +9,8 @@ search_page = st.Page("pages/bible_search.py", title="Bible Search", icon="🔍"
 challenge_page = st.Page(
     "pages/thirty_day_challenge.py", title="30 Day Challenge", icon="📅"
 )
+privacy_page = st.Page("pages/privacy.py", title="Privacy Policy", icon="🔒")
 
 # --- SET UP NAVIGATION ---
-pg = st.navigation([home_page, search_page, challenge_page])
+pg = st.navigation([home_page, search_page, challenge_page, privacy_page])
 pg.run()
