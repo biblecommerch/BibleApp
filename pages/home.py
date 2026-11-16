@@ -90,45 +90,32 @@ df = load_bible_data(TRANSLATIONS[version])
 st.markdown("### ✨ Daily Verse")
 
 if df is not None and not df.empty:
-    # Uses the current day of the year (1-365) so all visitors see the same verse today,
-    # automatically rendered in whichever Bible translation they currently have selected.
+    # Load KJV as the master index so every translation displays the exact same Book, Chapter, and Verse each day
+    kjv_master = load_bible_data("KJV.csv")
     day_of_year = datetime.now().timetuple().tm_yday
-    verse_index = day_of_year % len(df)
-    daily_row = df.iloc[verse_index]
-    
-    book = daily_row.get("Book", daily_row.get("book", ""))
-    chapter = daily_row.get("Chapter", daily_row.get("chapter", ""))
-    verse_num = daily_row.get("Verse", daily_row.get("verse", ""))
-    text = daily_row.get("Text", daily_row.get("text", ""))
+    master_row = kjv_master.iloc[day_of_year % len(kjv_master)]
 
-    st.markdown(
-        f"""
-        <div class="card">
-            <p style="font-size: 1.15em;"><b>"{text}"</b></p>
-            <p style="margin-bottom: 12px;">— {book} {chapter}:{verse_num} ({ver_code})</p>
-            <hr style="border: 0; border-top: 1px solid #E2D9C8; margin: 10px 0;">
-            <p style="margin: 0; font-size: 0.95em;">
-                <b>Daily Reflection &amp; Encouragement:</b> Every passage of Scripture reminds us of God's faithfulness and purposeful guidance. Take a quiet moment today to reflect on how {book} {chapter}:{verse_num} speaks into your current walk, trusting that God's Word brings clarity and strength for each step ahead.
-            </p>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-else:
-    # Fallback default card if dataset fails to load
-    st.markdown(
-        """
-        <div class="card">
-            <p style="font-size: 1.15em;"><b>"The Lord is my strength and my shield; my heart trusted in him, and I am helped."</b></p>
-            <p style="margin-bottom: 12px;">— Psalm 28:7 (KJV)</p>
-            <hr style="border: 0; border-top: 1px solid #E2D9C8; margin: 10px 0;">
-            <p style="margin: 0; font-size: 0.95em;">
-                <b>Daily Reflection &amp; Encouragement:</b> When life feels heavy, God does not ask you to carry it alone. Lean on Him as both your strength to endure and your shield to protect your peace today.
-            </p>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
+    target_book = str(master_row.get("Book", master_row.get("book", ""))).strip()
+    target_chap = int(master_row.get("Chapter", master_row.get("chapter", 1)))
+    target_verse = int(master_row.get("Verse", master_row.get("verse", 1)))
+
+    # Look up that exact Book, Chapter, and Verse in the user's selected translation
+    b_col = "Book" if "Book" in df.columns else "book"
+    c_col = "Chapter" if "Chapter" in df.columns else "chapter"
+    v_col = "Verse" if "Verse" in df.columns else "verse"
+    t_col = "Text" if "Text" in df.columns else "text"
+
+    matched = df[
+        (df[b_col].astype(str).str.lower() == target_book.lower()) &
+        (df[c_col].astype(int) == target_chap) &
+        (df[v_col].astype(int) == target_verse)
+    ]
+
+    daily_row = matched.iloc[0] if not matched.empty else master_row
+    book = daily_row.get(b_col, target_book)
+    chapter = daily_row.get(c_col, target_chap)
+    verse_num = daily_row.get(v_col, target_verse)
+    text = daily_row.get(t_col, "")
 
 
 # ==========================================
