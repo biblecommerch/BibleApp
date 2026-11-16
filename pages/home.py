@@ -89,6 +89,78 @@ df = load_bible_data(TRANSLATIONS[version])
 # ==========================================
 st.markdown("### ✨ Daily Verse")
 
+def generate_verse_reflection(book_name: str, chap: int, v_num: int, verse_text: str) -> str:
+    """
+    Tailors the Daily Reflection & Encouragement to the specific meaning, theme,
+    and biblical book context of today's Daily Verse.
+    """
+    t = verse_text.lower()
+    b = book_name.strip().lower()
+
+    # 1. Theme-based reflections matched to the actual words and meaning of the verse
+    if any(w in t for w in ["rich", "gold", "silver", "bless", "blessed", "increase", "prosper", "inheritance", "land"]):
+        return (
+            f"In {book_name} {chap}:{v_num}, we see how God's provision and blessing unfold in the lives of His people. "
+            f"True abundance isn't just about material increase—it's a reminder that everything we hold comes from God's faithful hand "
+            f"and is meant to be stewarded with gratitude, humility, and generosity."
+        )
+    elif any(w in t for w in ["fear not", "afraid", "dismayed", "trouble", "anxious", "peace", "refuge", "shield", "strength"]):
+        return (
+            f"{book_name} {chap}:{v_num} speaks directly to moments when worry or uncertainty tries to take hold. "
+            f"God doesn't ask you to muster up strength on your own; He invites you to anchor your heart in His steady presence, "
+            f"trusting that He is your refuge and peace no matter what today brings."
+        )
+    elif any(w in t for w in ["love", "charity", "kindness", "mercy", "forgive", "compassion", "grace"]):
+        return (
+            f"The heart of {book_name} {chap}:{v_num} points us toward the character of God—steadfast in mercy, rich in grace, "
+            f"and overflowing with love. As you reflect on these words today, look for one practical way to extend that same patience "
+            f"and kindness to someone in your path."
+        )
+    elif any(w in t for w in ["wisdom", "understanding", "knowledge", "teach", "counsel", "way", "path", "light", "truth"]):
+        return (
+            f"Scripture in {book_name} {chap}:{v_num} reminds us that true wisdom begins with seeking God's perspective above our own. "
+            f"When decisions feel unclear, His Word acts as a steady light—guiding your steps one faithful choice at a time."
+        )
+    elif any(w in t for w in ["pray", "prayer", "cry", "heard", "call upon", "ask", "seek"]):
+        return (
+            f"{book_name} {chap}:{v_num} is an open invitation to bring every burden, question, and thank-you directly before God. "
+            f"Prayer isn't about having the perfect words—it's about trusting a Father who listens closely and responds in His perfect timing."
+        )
+    elif any(w in t for w in ["faith", "believe", "trust", "hope", "promise", "covenant", "faithful"]):
+        return (
+            f"In {book_name} {chap}:{v_num}, we're called to hold fast to God's promises even before we see the full picture. "
+            f"Faith grows strongest when we remember that God's track record is unbroken and His word never returns empty."
+        )
+    elif any(w in t for w in ["sin", "repent", "cleanse", "righteous", "holy", "obey", "command", "law", "statutes"]):
+        return (
+            f"{book_name} {chap}:{v_num} calls us back to a life aligned with God's heart and holiness. "
+            f"God's commands aren't meant to weigh us down—they are guardrails of grace designed to keep us close to Him and walking in freedom."
+        )
+
+    # 2. Book-context fallback so even narrative or historical verses feel grounded
+    if b in ["genesis", "exodus", "leviticus", "numbers", "deuteronomy"]:
+        return (
+            f"This passage from {book_name} {chap}:{v_num} captures a foundational moment in how God walked with and shaped His early people. "
+            f"Even in the ordinary details of their journey, God was weaving a larger story of faithfulness—just as He is doing in your life today."
+        )
+    elif b in ["psalms", "psalm", "proverbs", "ecclesiastes", "song of solomon", "job"]:
+        return (
+            f"Drawn from Scripture's wisdom and worship literature, {book_name} {chap}:{v_num} gives honest voice to the human experience before God. "
+            f"Let these words slow your pace today and recenter your thoughts on His unshakeable character."
+        )
+    elif b in ["matthew", "mark", "luke", "john", "acts"]:
+        return (
+            f"In {book_name} {chap}:{v_num}, we see the Gospel in motion—revealing the heart, teaching, and saving power of Jesus Christ. "
+            f"Consider how this moment in Scripture challenges or encourages the way you follow Him today."
+        )
+
+    # 3. General thoughtful fallback
+    return (
+        f"Every detail in {book_name} {chap}:{v_num} sits inside God's larger story of redemption and faithfulness. "
+        f"Take a quiet moment to read this verse in its surrounding chapter today and ask God what truth He wants to highlight for your walk."
+    )
+
+
 if df is not None and not df.empty:
     # Load KJV as the master index so every translation displays the exact same Book, Chapter, and Verse each day
     kjv_master = load_bible_data("KJV.csv")
@@ -117,6 +189,9 @@ if df is not None and not df.empty:
     verse_num = daily_row.get(v_col, target_verse)
     text = daily_row.get(t_col, "")
 
+    # Generate a reflection tailored specifically to today's verse meaning and book context
+    reflection_text = generate_verse_reflection(str(book), int(chapter), int(verse_num), str(text))
+
     st.markdown(
         f"""
         <div class="card">
@@ -124,7 +199,7 @@ if df is not None and not df.empty:
             <p style="margin-bottom: 12px;">— {book} {chapter}:{verse_num} ({ver_code})</p>
             <hr style="border: 0; border-top: 1px solid #E2D9C8; margin: 10px 0;">
             <p style="margin: 0; font-size: 0.95em;">
-                <b>Daily Reflection &amp; Encouragement:</b> Every passage of Scripture reminds us of God's faithfulness and purposeful guidance. Take a quiet moment today to reflect on how {book} {chapter}:{verse_num} speaks into your current walk, trusting that God's Word brings clarity and strength for each step ahead.
+                <b>Daily Reflection &amp; Encouragement:</b> {reflection_text}
             </p>
         </div>
         """,
