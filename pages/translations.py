@@ -121,33 +121,21 @@ verse_query = st.text_input(
 )
 
 # ==========================================
-# 2. TOGGLE BUTTONS (GREEN = ON / GRAY = OFF)
+# 2. TRANSLATION PILLS SELECTOR (GREEN WHEN ON / GRAY WHEN OFF)
 # ==========================================
 st.write("Select which translations to display:")
-btn_cols = st.columns(6)
-all_keys = list(TRANSLATIONS.keys())
+selected_translations = st.pills(
+    "Choose Translations",
+    options=list(TRANSLATIONS.keys()),
+    default=st.session_state.active_order,
+    selection_mode="multi",
+    label_visibility="collapsed"
+)
 
-for idx, code in enumerate(all_keys):
-    is_active = code in st.session_state.active_order
-    with btn_cols[idx]:
-        if is_active:
-            if st.button(code, key=f"btn_toggle_{code}", use_container_width=True, type="primary"):
-                st.session_state.active_order.remove(code)
-                st.rerun()
-        else:
-            if st.button(code, key=f"btn_toggle_{code}", use_container_width=True, type="secondary"):
-                st.session_state.active_order.append(code)
-                st.rerun()
-
-# Quick Translation History Info Dropdown
-with st.expander("📖 About These Translations (Styles & History Reference)"):
-    for code, prof in PROFILES.items():
-        st.markdown(f"**{prof['full']}** — *{prof['style']}*")
-        st.caption(prof['desc'])
-        st.write("")
-
-st.markdown("---")
-
+# Update session state order immediately when user clicks pills
+if selected_translations:
+    # Keep user's custom arrangement order if they already had it, or update it
+    st.session_state.active_order = selected_translations
 # ==========================================
 # 3. TWO-COLUMN NOTEPAD GRID (WITH CONTROLS)
 # ==========================================
