@@ -121,29 +121,24 @@ verse_query = st.text_input(
 )
 
 # ==========================================
-# 2. TRANSLATION PILLS SELECTOR (WITH CHECKMARKS)
+# 2. TRANSLATION CHECKBOXES SELECTOR
 # ==========================================
 st.write("Select which translations to display:")
-selected_translations = st.pills(
-    "Choose Translations",
-    options=list(TRANSLATIONS.keys()),
-    default=st.session_state.active_order,
-    selection_mode="multi",
-    format_func=lambda code: f"✓ {code}" if code in st.session_state.active_order else code,
-    label_visibility="collapsed"
-)
+cols = st.columns(len(TRANSLATIONS))
 
-# Update session state order immediately when user clicks pills
-if selected_translations is not None:
-    # Keep existing card order for active items, add new ones to the end
-    updated_order = [c for c in st.session_state.active_order if c in selected_translations]
-    for c in selected_translations:
-        if c not in updated_order:
-            updated_order.append(c)
-            
-    if updated_order != st.session_state.active_order:
-        st.session_state.active_order = updated_order
-        st.rerun()
+new_active_order = []
+for idx, (code, csv_file) in enumerate(TRANSLATIONS.items()):
+    is_currently_active = code in st.session_state.active_order
+    with cols[idx]:
+        # Checkbox clearly shows checked/unchecked state
+        checked = st.checkbox(code, value=is_currently_active, key=f"chk_{code}")
+        if checked:
+            new_active_order.append(code)
+
+# Update session state if selection changed
+if new_active_order != st.session_state.active_order:
+    st.session_state.active_order = new_active_order
+    st.rerun()
     
 # ==========================================
 # 3. TWO-COLUMN NOTEPAD GRID (WITH CONTROLS)
