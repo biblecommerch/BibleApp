@@ -27,21 +27,6 @@ st.markdown(
         flex-direction: column;
         justify-content: space-between;
     }
-    .highlight-word {
-        background-color: #FFF3C4;
-        font-weight: bold;
-        padding: 2px 4px;
-        border-radius: 4px;
-        color: #333333;
-    }
-    /* Wrapper container to match home page inputs */
-    .input-box-wrapper {
-        background-color: #FAF6ED;
-        border: 1px solid #E2D9C8;
-        border-radius: 12px;
-        padding: 16px;
-        margin-bottom: 20px;
-    }
     </style>
     """,
     unsafe_allow_html=True,
@@ -60,12 +45,12 @@ TRANSLATIONS = {
 }
 
 FULL_NAMES = {
-    "KJV": "KJV (King James Version)",
-    "ASV": "ASV (American Standard Version)",
-    "BSB": "Berean Standard Bible",
-    "YLT": "Young's Literal Translation",
-    "BBE": "Bible in Basic English",
-    "DRC": "Douay-Rheims Catholic Bible",
+    "KJV": "King James Version (KJV)",
+    "ASV": "American Standard Version (ASV)",
+    "BSB": "Berean Standard Bible (BSB)",
+    "YLT": "Young's Literal Translation (YLT)",
+    "BBE": "Bible in Basic English (BBE)",
+    "DRC": "Douay-Rheims Catholic Bible (DRC)",
 }
 
 PROFILES = {
@@ -126,20 +111,17 @@ st.markdown(
 )
 
 # ==========================================
-# 1. VERSE SEARCH (WRAPPED CONTAINER)
+# 1. VERSE SEARCH (CLEAN INPUT)
 # ==========================================
 st.subheader("⚖️ Compare Any Verse")
-
-st.markdown('<div class="input-box-wrapper">', unsafe_allow_html=True)
 verse_query = st.text_input(
     "Enter Verse Reference:",
     value="John 3:16",
     placeholder="e.g., John 3:16, Romans 8:28...",
 )
-st.markdown('</div>', unsafe_allow_html=True)
 
 # ==========================================
-# 2. TOGGLE BUTTONS (ACTIVE vs INACTIVE)
+# 2. TOGGLE BUTTONS (GREEN = ON / GRAY = OFF)
 # ==========================================
 st.write("Select which translations to display:")
 btn_cols = st.columns(6)
@@ -147,15 +129,15 @@ all_keys = list(TRANSLATIONS.keys())
 
 for idx, code in enumerate(all_keys):
     is_active = code in st.session_state.active_order
-    # Clearer button text without cluttering emojis
-    label = f"[ON] {code}" if is_active else f"{code}"
     with btn_cols[idx]:
-        if st.button(label, key=f"btn_toggle_{code}", use_container_width=True):
-            if is_active:
+        if is_active:
+            if st.button(code, key=f"btn_toggle_{code}", use_container_width=True, type="primary"):
                 st.session_state.active_order.remove(code)
-            else:
+                st.rerun()
+        else:
+            if st.button(code, key=f"btn_toggle_{code}", use_container_width=True, type="secondary"):
                 st.session_state.active_order.append(code)
-            st.rerun()
+                st.rerun()
 
 # Quick Translation History Info Dropdown
 with st.expander("📖 About These Translations (Styles & History Reference)"):
@@ -164,7 +146,7 @@ with st.expander("📖 About These Translations (Styles & History Reference)"):
         st.caption(prof['desc'])
         st.write("")
 
-# (Divider removed here to eliminate excess spacing before the word highlight)
+st.markdown("---")
 
 # ==========================================
 # 3. TWO-COLUMN NOTEPAD GRID (WITH CONTROLS)
@@ -175,13 +157,6 @@ if verse_query and active_codes:
     match = re.match(r"^\s*([1-3]?\s*[A-Za-z]+)\s+(\d+):(\d+)\s*$", verse_query)
     if match:
         b_name, c_num, v_num = match.group(1).strip(), int(match.group(2)), int(match.group(3))
-        
-        # Word highlight input
-        st.subheader("🔍 Side-by-Side Word Highlight")
-        highlight_word = st.text_input(
-            "Enter a key word to highlight across all active cards:",
-            placeholder="e.g., God, loved, world, Son...",
-        ).strip()
         st.write("")
 
         # Render cards in a clean 2-column grid based on active ordering
@@ -211,18 +186,12 @@ if verse_query and active_codes:
                             if not hit.empty:
                                 verse_text = hit.iloc[0][t_col]
 
-                        # Real-time word highlighting inside verse text
-                        display_text = verse_text
-                        if highlight_word:
-                            pattern = re.compile(re.escape(highlight_word), re.IGNORECASE)
-                            display_text = pattern.sub(lambda m: f'<span class="highlight-word">{m.group(0)}</span>', verse_text)
-
                         st.markdown(
                             f"""
                             <div class="notepad-card">
                                 <div>
                                     <p style="margin: 0 0 8px 0; font-weight: bold; color: #5C4B37; font-size: 1.05em;">{full_title}</p>
-                                    <p style="margin: 0 0 12px 0; font-size: 1.05em; font-style: italic;">"{display_text}"</p>
+                                    <p style="margin: 0 0 12px 0; font-size: 1.05em; font-style: italic;">"{verse_text}"</p>
                                 </div>
                             </div>
                             """,
@@ -268,10 +237,13 @@ if verse_query and active_codes:
         selected_themes = st.pills(
             "Tag Note Theme:",
             [
-                "Comfort", "Wisdom", "Faith", "Provision", 
-                "Strength", "Peace", "Grace", "Love", 
-                "Salvation", "Hope", "Guidance", "Healing", 
-                "Prayer", "Truth"
+                "Faith", "Grace", "Mercy", "Salvation", "Redemption", 
+                "Holiness", "Righteousness", "Truth", "Glory",
+                "Wisdom", "Guidance", "Obedience", "Discipline", 
+                "Patience", "Humility", "Discernment",
+                "Peace", "Comfort", "Hope", "Joy", 
+                "Strength", "Courage", "Rest", "Refuge", 
+                "Healing", "Provision"
             ],
             selection_mode="multi"
         )
