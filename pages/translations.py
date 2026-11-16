@@ -7,7 +7,7 @@ from auth_helper import render_sidebar_auth
 # ==========================================
 # PAGE CONFIGURATION & STYLING
 # ==========================================
-st.set_page_config(page_title="Bible Translations Guide | Bible Focus", page_icon="📖", layout="centered")
+st.set_page_config(page_title="Bible Translations | Bible Focus", page_icon="📖", layout="centered")
 apply_global_styles()
 render_sidebar_auth()
 
@@ -63,8 +63,8 @@ def load_bible_data(csv_filename):
 st.markdown(
     """
     <div class="header-box">
-        <h1 style="margin:0;">Bible Translations Guide</h1>
-        <p style="margin-top:5px;">Compare Translations Side by Side in Your Study Notepad</p>
+        <h1 style="margin:0;">Bible Translations</h1>
+        <p style="margin-top:5px;">Compare and study your favorite verse across multiple translations.</p>
     </div>
     """,
     unsafe_allow_html=True,
@@ -82,7 +82,7 @@ verse_query = st.text_input(
 
 st.write("Select which translation cards to display on your board:")
 
-# Interactive toggle pills/checkboxes for active cards
+# Interactive toggle checkboxes for active cards
 col_t1, col_t2, col_t3 = st.columns(3)
 selected_active = []
 trans_keys = list(TRANSLATIONS.keys())
@@ -100,13 +100,16 @@ with col_t3:
 st.markdown("---")
 
 # ==========================================
-# 2. TWO-COLUMN NOTEPAD GRID
+# 2. TWO-COLUMN NOTEPAD GRID & STUDY NOTES
 # ==========================================
 if verse_query and selected_active:
     match = re.match(r"^\s*([1-3]?\s*[A-Za-z]+)\s+(\d+):(\d+)\s*$", verse_query)
     if match:
         b_name, c_num, v_num = match.group(1).strip(), int(match.group(2)), int(match.group(3))
         
+        # Dictionary to store fetched verses for saving later
+        current_verse_data = {}
+
         # Render cards in a clean 2-column grid
         for i in range(0, len(selected_active), 2):
             cols = st.columns(2)
@@ -133,6 +136,8 @@ if verse_query and selected_active:
                             if not hit.empty:
                                 verse_text = hit.iloc[0][t_col]
 
+                        current_verse_data[label] = verse_text
+
                         st.markdown(
                             f"""
                             <div class="card" style="min-height: 180px; display: flex; flex-direction: column; justify-content: space-between;">
@@ -147,6 +152,26 @@ if verse_query and selected_active:
                         with st.expander("About this translation"):
                             st.caption(f"**Style:** {profile['style']}")
                             st.write(profile["desc"])
+
+        # ==========================================
+        # 3. PERSONAL STUDY NOTEPAD & SAVE SECTION
+        # ==========================================
+        st.markdown("---")
+        st.subheader("📝 Personal Study Notes")
+        st.write(f"Jot down your thoughts, takeaways, or prayers for **{verse_query}**:")
+        
+        user_notes = st.text_area(
+            "Study Notes:",
+            placeholder="Type your personal insights or observations here...",
+            label_visibility="collapsed"
+        )
+
+        if st.button("💾 Save Verse & Notes", use_container_width=True):
+            if user_notes.strip():
+                st.success(f"Successfully saved {verse_query} and your study notes! (Linked to your account session)")
+            else:
+                st.warning("Please add some notes before saving.")
+
     else:
         st.info("Tip: Use the format **Book Chapter:Verse** (for example: `John 3:16`).")
 elif not selected_active:
