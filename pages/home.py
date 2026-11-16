@@ -75,6 +75,9 @@ with ver_col2:
         options=list(TRANSLATIONS.keys()),
         index=list(TRANSLATIONS.keys()).index(st.session_state.selected_version),
     )
+if st.button("📖 Go Deeper: Compare Translations", use_container_width=True):
+        st.switch_page("pages/translations.py")
+
 
 # Save the user's latest translation selection and extract the short code (e.g., "KJV", "BSB")
 st.session_state.selected_version = version
