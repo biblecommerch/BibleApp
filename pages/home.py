@@ -1,279 +1,155 @@
-import re
-import pandas as pd
 import streamlit as st
+import pandas as pd
+import os
+from datetime import datetime
 from styles import apply_global_styles
 from auth_helper import render_sidebar_auth
 
-# ==========================================
-# PAGE CONFIGURATION & STYLING
-# ==========================================
-st.set_page_config(page_title="Bible Translations | Bible Focus", page_icon="📖", layout="centered")
+st.set_page_config(
+    page_title="Bible Focus — Home",
+    page_icon="📖",
+    layout="centered"
+)
+
 apply_global_styles()
 render_sidebar_auth()
 
-st.markdown(
-    """
-    <style>
-    /* Notepad Card Styling */
-    .notepad-card {
-        background-color: #FFFFFF;
-        border: 1px solid #E2D9C8;
-        border-radius: 12px;
-        padding: 18px;
-        margin-bottom: 15px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.04);
-        min-height: 180px;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-    }
-    
-    /* Sleek Toggle Button Styling for Active (Green) and Inactive (Gray) */
-    div.stButton > button {
-        border-radius: 8px !important;
-        font-weight: 600 !important;
-        transition: all 0.2s ease-in-out;
-    }
-    
-    /* Tighten spacing inside the About expander */
-    .streamlit-expanderContent {
-        padding-top: 5px !important;
-        padding-bottom: 5px !important;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
-
 # ==========================================
-# TRANSLATION DATA & PROFILES (NO EM DASHES)
+# HELPER FUNCTIONS
 # ==========================================
-TRANSLATIONS = {
-    "KJV": "KJV.csv",
-    "ASV": "ASV.csv",
-    "BSB": "BSB.csv",
-    "YLT": "YLT.csv",
-    "BBE": "BBE.csv",
-    "DRC": "DRC.csv",
-}
-
-FULL_NAMES = {
-    "KJV": "King James Version (KJV)",
-    "ASV": "American Standard Version (ASV)",
-    "BSB": "Berean Standard Bible (BSB)",
-    "YLT": "Youngs Literal Translation (YLT)",
-    "BBE": "Bible in Basic English (BBE)",
-    "DRC": "Douay Rheims Catholic Bible (DRC)",
-}
-
-PROFILES = {
-    "KJV": {
-        "full": "King James Version (KJV)",
-        "style": "Word-for-Word / Formal Equivalence",
-        "desc": "The classic English translation known for its poetic rhythm, reverence, and historic influence. Uses traditional pronouns and translates from the Textus Receptus."
-    },
-    "ASV": {
-        "full": "American Standard Version (ASV)",
-        "style": "Strict Word-for-Word",
-        "desc": "Prized by Bible students for extreme literal accuracy. Famous for rendering Gods covenant name as Jehovah throughout the Old Testament."
-    },
-    "BSB": {
-        "full": "Berean Standard Bible (BSB)",
-        "style": "Balanced Word-for-Word & Readability",
-        "desc": "A clean, modern English translation blending accuracy to the original Hebrew and Greek with smooth phrasing for everyday reading."
-    },
-    "YLT": {
-        "full": "Youngs Literal Translation (YLT)",
-        "style": "Ultra-Literal (Preserves Original Verb Tenses)",
-        "desc": "Translated by Robert Young to mirror exact grammar and verb tenses of original texts, making it a powerful tool for deep word study."
-    },
-    "BBE": {
-        "full": "Bible in Basic English (BBE)",
-        "style": "Simple, Clear English (1,000-Word Vocabulary)",
-        "desc": "Created using a focused vocabulary of 1,000 basic English words so Scripture is accessible and easy to grasp for readers of all ages."
-    },
-    "DRC": {
-        "full": "Douay Rheims Catholic Bible (DRC)",
-        "style": "Translated from the Latin Vulgate (73 Books)",
-        "desc": "The historic English Catholic Bible translated from St. Jeromes Latin Vulgate, including the 7 Deuterocanonical books."
-    },
-}
-
 @st.cache_data
 def load_bible_data(csv_filename):
-    try:
-        return pd.read_csv(csv_filename)
-    except Exception:
-        return None
+    path = os.path.join("data", csv_filename)
+    if os.path.exists(path):
+        return pd.read_csv(path)
+    return None
 
-# Initialize Session State for Active Translations Order
-if "active_order" not in st.session_state:
-    st.session_state.active_order = ["KJV", "ASV", "BSB"]
+def get_daily_verse_index():
+    day_of_year = datetime.now().timetuple().tm_yday
+    return day_of_year
+
+def generate_verse_reflection(book_name: str, chap: int, v_num: int, verse_text: str) -> str:
+    t = verse_text.lower()
+    b = book_name.strip().lower()
+    
+    if any(w in t for w in ["rich", "gold", "silver", "bless", "blessed", "increase", "prosper", "inheritance", "land"]):
+        return (
+            f"In {book_name} {chap}:{v_num}, we see how God's provision and blessing unfold in the lives of His people. "
+            f"True abundance isn't just about material increase—it's a reminder that everything we hold comes from God's faithful hand "
+            f"and is meant to be stewarded with gratitude, humility, and generosity."
+        )
+    elif any(w in t for w in ["fear not", "afraid", "dismayed", "trouble", "anxious", "peace", "refuge", "shield", "strength"]):
+        return (
+            f"{book_name} {chap}:{v_num} speaks directly to moments when worry or uncertainty tries to take hold. "
+            f"God doesn't ask you to muster up strength on your own; He invites you to anchor your heart in His steady presence."
+        )
+    elif any(w in t for w in ["love", "charity", "kindness", "mercy", "forgive", "compassion", "grace"]):
+        return (
+            f"The heart of {book_name} {chap}:{v_num} points us toward the character of God—steadfast in mercy, rich in grace, "
+            f"and overflowing with love."
+        )
+    elif any(w in t for w in ["wisdom", "understanding", "knowledge", "teach", "counsel", "way", "path", "light", "truth"]):
+        return (
+            f"Scripture in {book_name} {chap}:{v_num} reminds us that true wisdom begins with seeking God's perspective above our own."
+        )
+    elif any(w in t for w in ["pray", "prayer", "cry", "heard", "call upon", "ask", "seek"]):
+        return (
+            f"{book_name} {chap}:{v_num} is an open invitation to bring every burden, question, and thank-you directly before God."
+        )
+    elif any(w in t for w in ["faith", "believe", "trust", "hope", "promise", "covenant", "faithful"]):
+        return (
+            f"In {book_name} {chap}:{v_num}, we're called to hold fast to God's promises even before we see the full picture."
+        )
+    elif any(w in t for w in ["sin", "repent", "cleanse", "righteous", "holy", "obey", "command", "law", "statutes"]):
+        return (
+            f"{book_name} {chap}:{v_num} calls us back to a life aligned with God's heart and holiness."
+        )
+        
+    return (
+        f"Every detail in {book_name} {chap}:{v_num} sits inside God's larger story of redemption and faithfulness. "
+        f"Take a quiet moment to read this verse in its surrounding chapter today."
+    )
 
 # ==========================================
-# HEADER
+# HEADER SECTION
 # ==========================================
 st.markdown(
     """
-    <div class="header-box">
-        <h1 style="margin:0;">Bible Translations</h1>
-        <p style="margin-top:5px;">Compare and study your favorite verse across multiple translations.</p>
+    <div style="background-color: #2b3a2a; padding: 30px; border-radius: 10px; text-align: center; border: 1px solid #4a6b4e; margin-bottom: 25px;">
+        <h1 style="margin:0; color: #f4f1ea;">Welcome to Your Bible App</h1>
+        <p style="margin-top:5px; color: #b7d5b8;">Your daily space for scripture search, reflection, and reading plans.</p>
     </div>
     """,
     unsafe_allow_html=True,
 )
 
 # ==========================================
-# 1. VERSE SEARCH
+# QUICK NAVIGATION BUTTONS
 # ==========================================
-st.subheader("⚖️ Compare Any Verse")
-verse_query = st.text_input(
-    "Enter Verse Reference:",
-    value="John 3:16",
-    placeholder="e.g., John 3:16, Romans 8:28...",
+st.markdown(
+    """
+    ### Where would you like to go?
+    - 🔍 **[Bible Search](https://kjv-bible.streamlit.app/~/+/bible_search)**: Look up verses across the King James Version easily.
+    - ⚖️ **[Bible Translations](https://kjv-bible.streamlit.app/~/+/translations)**: Compare and study your favorite verses side by side.
+    - 📅 **[30 Day Challenge](https://kjv-bible.streamlit.app/~/+/thirty_day_challenge)**: Build a daily habit of reading God's Word through our curated reading guide.
+    """
 )
 
-# ==========================================
-# 2. TOGGLE BUTTONS (TRUE GREEN = ON / GRAY = OFF)
-# ==========================================
-st.write("Select which translations to display:")
-btn_cols = st.columns(6)
-all_keys = list(TRANSLATIONS.keys())
-
-for idx, code in enumerate(all_keys):
-    is_active = code in st.session_state.active_order
-    with btn_cols[idx]:
-        # Using Streamlit primary type for active (green) and secondary for inactive (gray)
-        btn_type = "primary" if is_active else "secondary"
-        if st.button(code, key=f"btn_toggle_{code}", use_container_width=True, type=btn_type):
-            if is_active:
-                if len(st.session_state.active_order) > 1:  # Keep at least one active
-                    st.session_state.active_order.remove(code)
-                    st.rerun()
-            else:
-                st.session_state.active_order.append(code)
-                st.rerun()
-
-# Quick Translation History Info Dropdown (Tightened Spacing)
-with st.expander("📖 About These Translations (Styles & History Reference)"):
-    for code, prof in PROFILES.items():
-        st.markdown(f"**{prof['full']}** | *{prof['style']}*")
-        st.caption(prof['desc'])
-
-st.markdown("---")
+st.write("")
 
 # ==========================================
-# 3. TWO-COLUMN NOTEPAD GRID (WITH CONTROLS)
+# DAILY VERSE SECTION
 # ==========================================
-active_codes = st.session_state.active_order
+st.markdown("### ✨ Daily Verse")
 
-if verse_query and active_codes:
-    match = re.match(r"^\s*([1-3]?\s*[A-Za-z]+)\s+(\d+):(\d+)\s*$", verse_query)
-    if match:
-        b_name, c_num, v_num = match.group(1).strip(), int(match.group(2)), int(match.group(3))
-        st.write("")
-
-        # Render cards in a clean 2-column grid based on active ordering
-        for i in range(0, len(active_codes), 2):
-            cols = st.columns(2)
-            for j in range(2):
-                idx = i + j
-                if idx < len(active_codes):
-                    code = active_codes[idx]
-                    csv_file = TRANSLATIONS[code]
-                    full_title = FULL_NAMES[code]
-                    
-                    with cols[j]:
-                        df = load_bible_data(csv_file)
-                        verse_text = "Verse not found in this translation."
-                        if df is not None and not df.empty:
-                            b_col = "Book" if "Book" in df.columns else "book"
-                            c_col = "Chapter" if "Chapter" in df.columns else "chapter"
-                            v_col = "Verse" if "Verse" in df.columns else "verse"
-                            t_col = "Text" if "Text" in df.columns else "text"
-
-                            hit = df[
-                                (df[b_col].astype(str).str.lower() == b_name.lower()) &
-                                (df[c_col].astype(int) == c_num) &
-                                (df[v_col].astype(int) == v_num)
-                            ]
-                            if not hit.empty:
-                                verse_text = hit.iloc[0][t_col]
-
-                        st.markdown(
-                            f"""
-                            <div class="notepad-card">
-                                <div>
-                                    <p style="margin: 0 0 8px 0; font-weight: bold; color: #5C4B37; font-size: 1.05em;">{full_title}</p>
-                                    <p style="margin: 0 0 12px 0; font-size: 1.05em; font-style: italic;">"{verse_text}"</p>
-                                </div>
-                            </div>
-                            """,
-                            unsafe_allow_html=True,
-                        )
-
-                        # Directional Controls (Left, Right, Up, Down)
-                        c_l, c_r, c_u, c_d = st.columns(4)
-                        with c_l:
-                            if idx > 0 and st.button("◀", key=f"left_{code}_{idx}", use_container_width=True, help="Move Left"):
-                                active_codes[idx], active_codes[idx - 1] = active_codes[idx - 1], active_codes[idx]
-                                st.session_state.active_order = active_codes
-                                st.rerun()
-                        with c_r:
-                            if idx < len(active_codes) - 1 and st.button("▶", key=f"right_{code}_{idx}", use_container_width=True, help="Move Right"):
-                                active_codes[idx], active_codes[idx + 1] = active_codes[idx + 1], active_codes[idx]
-                                st.session_state.active_order = active_codes
-                                st.rerun()
-                        with c_u:
-                            if idx >= 2 and st.button("▲", key=f"up_{code}_{idx}", use_container_width=True, help="Move Up"):
-                                active_codes[idx], active_codes[idx - 2] = active_codes[idx - 2], active_codes[idx]
-                                st.session_state.active_order = active_codes
-                                st.rerun()
-                        with c_d:
-                            if idx < len(active_codes) - 2 and st.button("▼", key=f"down_{code}_{idx}", use_container_width=True, help="Move Down"):
-                                active_codes[idx], active_codes[idx + 2] = active_codes[idx + 2], active_codes[idx]
-                                st.session_state.active_order = active_codes
-                                st.rerun()
-
-        # ==========================================
-        # 4. PERSONAL STUDY NOTES & EXPANDED THEME TAGS
-        # ==========================================
-        st.markdown("---")
-        st.subheader("📝 Personal Study Notes")
-        st.write(f"Jot down your thoughts and takeaways for **{verse_query}**:")
+kjv_master = load_bible_data("KJV.csv")
+if kjv_master is not None and not kjv_master.empty:
+    idx = get_daily_verse_index() % len(kjv_master)
+    daily_row = kjv_master.iloc[idx]
+    
+    book = daily_row.get("Book", "Genesis")
+    chapter = daily_row.get("Chapter", 1)
+    target_verse = 1
+    for col_candidate in ["Verse", "verse", "v"]:
+        if col_candidate in daily_row.index:
+            target_verse = daily_row[col_candidate]
+            break
+            
+    v_col = None
+    t_col = None
+    for col in kjv_master.columns:
+        if str(col).strip().lower() in ["verse", "v"]:
+            v_col = col
+        if str(col).strip().lower() in ["text", "content", "verse_text"]:
+            t_col = col
+            
+    if v_col is None:
+        v_col = kjv_master.columns[1] if len(kjv_master.columns) > 1 else kjv_master.columns[0]
+    if t_col is None:
+        t_col = kjv_master.columns[2] if len(kjv_master.columns) > 2 else kjv_master.columns[1]
         
-        user_notes = st.text_area(
-            "Study Notes:",
-            placeholder="Type your personal insights or observations here...",
-            label_visibility="collapsed"
-        )
+    verse_num = daily_row.get(v_col, target_verse)
+    text = daily_row.get(t_col, "")
+    ver_code = "KJV"
 
-        selected_themes = st.pills(
-            "Tag Note Theme:",
-            [
-                "Faith", "Grace", "Mercy", "Salvation", "Redemption", 
-                "Holiness", "Righteousness", "Truth", "Glory",
-                "Wisdom", "Guidance", "Obedience", "Discipline", 
-                "Patience", "Humility", "Discernment",
-                "Peace", "Comfort", "Hope", "Joy", 
-                "Strength", "Courage", "Rest", "Refuge", 
-                "Healing", "Provision"
-            ],
-            selection_mode="multi"
-        )
+    reflection_text = generate_verse_reflection(str(book), int(chapter), int(verse_num), str(text))
 
-        if st.button("💾 Save Verse & Notes", use_container_width=True):
-            if user_notes.strip():
-                themes_str = ", ".join(selected_themes) if selected_themes else "None"
-                st.success(f"Successfully saved {verse_query} with tags [{themes_str}] and your study notes!")
-            else:
-                st.warning("Please add some notes before saving.")
+    st.markdown(
+        f"""
+        <div class="card" style="background-color: #f9f6f0; padding: 20px; border-radius: 8px; border: 1px solid #e2d9c8;">
+        <p style="font-size: 1.15em; color: #2c221e;"><b>"{text}"</b></p>
+        <p style="margin-bottom: 12px; color: #5c4b37;">— {book} {chapter}:{verse_num} ({ver_code})</p>
+        <hr style="border: 0; border-top: 1px solid #e2d9c8; margin: 10px 0;">
+        <p style="margin: 0; font-size: 0.95em; color: #2c221e;">
+            <b>Daily Reflection &amp; Encouragement:</b> {reflection_text}
+        </p>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
-    else:
-        st.info("Tip: Use the format **Book Chapter:Verse** (for example: `John 3:16`).")
-elif not active_codes:
-    st.warning("Please select at least one translation button above to display your cards.")
-
+# ==========================================
+# FOOTER SECTION
+# ==========================================
 st.markdown("---")
-if st.button("← Back to Home", use_container_width=True):
-    st.switch_page("pages/home.py")
+st.info("💡 **Tip:** Use the sidebar menu to navigate between your study tools, personal notes, and reading challenges.")
