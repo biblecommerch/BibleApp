@@ -117,6 +117,34 @@ if df is not None and not df.empty:
     verse_num = daily_row.get(v_col, target_verse)
     text = daily_row.get(t_col, "")
 
+    st.markdown(
+        f"""
+        <div class="card">
+            <p style="font-size: 1.15em;"><b>"{text}"</b></p>
+            <p style="margin-bottom: 12px;">— {book} {chapter}:{verse_num} ({ver_code})</p>
+            <hr style="border: 0; border-top: 1px solid #E2D9C8; margin: 10px 0;">
+            <p style="margin: 0; font-size: 0.95em;">
+                <b>Daily Reflection &amp; Encouragement:</b> Every passage of Scripture reminds us of God's faithfulness and purposeful guidance. Take a quiet moment today to reflect on how {book} {chapter}:{verse_num} speaks into your current walk, trusting that God's Word brings clarity and strength for each step ahead.
+            </p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+else:
+    st.markdown(
+        """
+        <div class="card">
+            <p style="font-size: 1.15em;"><b>"The Lord is my strength and my shield; my heart trusted in him, and I am helped."</b></p>
+            <p style="margin-bottom: 12px;">— Psalm 28:7 (KJV)</p>
+            <hr style="border: 0; border-top: 1px solid #E2D9C8; margin: 10px 0;">
+            <p style="margin: 0; font-size: 0.95em;">
+                <b>Daily Reflection &amp; Encouragement:</b> When life feels heavy, God does not ask you to carry it alone. Lean on Him as both your strength to endure and your shield to protect your peace today.
+            </p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
 
 # ==========================================
 # 3. DUAL BIBLE SEARCH (PASSAGE + KEYWORD)
