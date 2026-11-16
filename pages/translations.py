@@ -14,6 +14,7 @@ render_sidebar_auth()
 st.markdown(
     """
     <style>
+    /* Notepad Card Styling */
     .notepad-card {
         background-color: #FFFFFF;
         border: 1px solid #E2D9C8;
@@ -32,6 +33,14 @@ st.markdown(
         padding: 2px 4px;
         border-radius: 4px;
         color: #333333;
+    }
+    /* Wrapper container to match home page inputs */
+    .input-box-wrapper {
+        background-color: #FAF6ED;
+        border: 1px solid #E2D9C8;
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 20px;
     }
     </style>
     """,
@@ -117,17 +126,20 @@ st.markdown(
 )
 
 # ==========================================
-# 1. VERSE SEARCH
+# 1. VERSE SEARCH (WRAPPED CONTAINER)
 # ==========================================
 st.subheader("⚖️ Compare Any Verse")
+
+st.markdown('<div class="input-box-wrapper">', unsafe_allow_html=True)
 verse_query = st.text_input(
     "Enter Verse Reference:",
     value="John 3:16",
     placeholder="e.g., John 3:16, Romans 8:28...",
 )
+st.markdown('</div>', unsafe_allow_html=True)
 
 # ==========================================
-# 2. TOGGLE BUTTONS (DARK = ON / LIGHT = OFF)
+# 2. TOGGLE BUTTONS (ACTIVE vs INACTIVE)
 # ==========================================
 st.write("Select which translations to display:")
 btn_cols = st.columns(6)
@@ -135,7 +147,8 @@ all_keys = list(TRANSLATIONS.keys())
 
 for idx, code in enumerate(all_keys):
     is_active = code in st.session_state.active_order
-    label = f"🟢 {code}" if is_active else f"⚪ {code}"
+    # Clearer button text without cluttering emojis
+    label = f"[ON] {code}" if is_active else f"{code}"
     with btn_cols[idx]:
         if st.button(label, key=f"btn_toggle_{code}", use_container_width=True):
             if is_active:
@@ -151,10 +164,10 @@ with st.expander("📖 About These Translations (Styles & History Reference)"):
         st.caption(prof['desc'])
         st.write("")
 
-st.markdown("---")
+# (Divider removed here to eliminate excess spacing before the word highlight)
 
 # ==========================================
-# 3. TWO-COLUMN NOTEPAD GRID (WITH UP/DOWN/LEFT/RIGHT CONTROLS)
+# 3. TWO-COLUMN NOTEPAD GRID (WITH CONTROLS)
 # ==========================================
 active_codes = st.session_state.active_order
 
@@ -229,12 +242,12 @@ if verse_query and active_codes:
                                 st.session_state.active_order = active_codes
                                 st.rerun()
                         with c_u:
-                            if idx >= 2 and st.button("▲", key=f"up_{code}_{idx}", use_container_width=True, help="Move Up (swap with card 2 spots above)"):
+                            if idx >= 2 and st.button("▲", key=f"up_{code}_{idx}", use_container_width=True, help="Move Up"):
                                 active_codes[idx], active_codes[idx - 2] = active_codes[idx - 2], active_codes[idx]
                                 st.session_state.active_order = active_codes
                                 st.rerun()
                         with c_d:
-                            if idx < len(active_codes) - 2 and st.button("▼", key=f"down_{code}_{idx}", use_container_width=True, help="Move Down (swap with card 2 spots below)"):
+                            if idx < len(active_codes) - 2 and st.button("▼", key=f"down_{code}_{idx}", use_container_width=True, help="Move Down"):
                                 active_codes[idx], active_codes[idx + 2] = active_codes[idx + 2], active_codes[idx]
                                 st.session_state.active_order = active_codes
                                 st.rerun()
@@ -249,7 +262,7 @@ if verse_query and active_codes:
         user_notes = st.text_area(
             "Study Notes:",
             placeholder="Type your personal insights or observations here...",
-            label_version="collapsed"
+            label_visibility="collapsed"
         )
 
         selected_themes = st.pills(
