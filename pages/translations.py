@@ -11,6 +11,33 @@ st.set_page_config(page_title="Bible Translations | Bible Focus", page_icon="�
 apply_global_styles()
 render_sidebar_auth()
 
+st.markdown(
+    """
+    <style>
+    .notepad-card {
+        background-color: #FFFFFF;
+        border: 1px solid #E2D9C8;
+        border-radius: 12px;
+        padding: 18px;
+        margin-bottom: 15px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.04);
+        min-height: 180px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+    .highlight-word {
+        background-color: #FFF3C4;
+        font-weight: bold;
+        padding: 2px 4px;
+        border-radius: 4px;
+        color: #333333;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
 # ==========================================
 # TRANSLATION DATA & PROFILES
 # ==========================================
@@ -26,10 +53,10 @@ TRANSLATIONS = {
 FULL_NAMES = {
     "KJV": "KJV (King James Version)",
     "ASV": "ASV (American Standard Version)",
-    "BSB": "BSB (Berean Standard Bible)",
-    "YLT": "YLT (Young's Literal Translation)",
-    "BBE": "BBE (Bible in Basic English)",
-    "DRC": "DRC (Douay-Rheims Catholic Bible)",
+    "BSB": "Berean Standard Bible",
+    "YLT": "Young's Literal Translation",
+    "BBE": "Bible in Basic English",
+    "DRC": "Douay-Rheims Catholic Bible",
 }
 
 PROFILES = {
@@ -72,6 +99,10 @@ def load_bible_data(csv_filename):
     except Exception:
         return None
 
+# Initialize Session State for Active Translations Order
+if "active_order" not in st.session_state:
+    st.session_state.active_order = ["KJV", "ASV", "BSB"]
+
 # ==========================================
 # HEADER
 # ==========================================
@@ -86,32 +117,32 @@ st.markdown(
 )
 
 # ==========================================
-# 1. VERSE SEARCH & AUDIO READER
+# 1. VERSE SEARCH
 # ==========================================
 st.subheader("⚖️ Compare Any Verse")
-col_search, col_audio = st.columns([3, 1])
-with col_search:
-    verse_query = st.text_input(
-        "Enter Verse Reference:",
-        value="John 3:16",
-        placeholder="e.g., John 3:16, Romans 8:28...",
-    )
-with col_audio:
-    st.write("") # spacing
-    st.write("")
-    if st.button("🎧 Listen to Verse", use_container_width=True):
-        st.info("Audio reader simulated: Playing audio reading for " + verse_query)
+verse_query = st.text_input(
+    "Enter Verse Reference:",
+    value="John 3:16",
+    placeholder="e.g., John 3:16, Romans 8:28...",
+)
 
 # ==========================================
-# 2. CUSTOM CARD ORDER & SELECTOR
+# 2. TOGGLE BUTTONS (DARK = ON / LIGHT = OFF)
 # ==========================================
 st.write("Select which translations to display:")
-selected_codes = st.multiselect(
-    "Choose Translations (drag or select in your preferred comparison order):",
-    options=list(TRANSLATIONS.keys()),
-    default=["KJV", "ASV", "BSB"],
-    label_visibility="collapsed"
-)
+btn_cols = st.columns(6)
+all_keys = list(TRANSLATIONS.keys())
+
+for idx, code in enumerate(all_keys):
+    is_active = code in st.session_state.active_order
+    label = f"🟢 {code}" if is_active else f"⚪ {code}"
+    with btn_cols[idx]:
+        if st.button(label, key=f"btn_toggle_{code}", use_container_width=True):
+            if is_active:
+                st.session_state.active_order.remove(code)
+            else:
+                st.session_state.active_order.append(code)
+            st.rerun()
 
 # Quick Translation History Info Dropdown
 with st.expander("📖 About These Translations (Styles & History Reference)"):
@@ -123,19 +154,30 @@ with st.expander("📖 About These Translations (Styles & History Reference)"):
 st.markdown("---")
 
 # ==========================================
-# 3. TWO-COLUMN NOTEPAD GRID
+# 3. TWO-COLUMN NOTEPAD GRID (WITH UP/DOWN/LEFT/RIGHT CONTROLS)
 # ==========================================
-if verse_query and selected_codes:
+active_codes = st.session_state.active_order
+
+if verse_query and active_codes:
     match = re.match(r"^\s*([1-3]?\s*[A-Za-z]+)\s+(\d+):(\d+)\s*$", verse_query)
     if match:
         b_name, c_num, v_num = match.group(1).strip(), int(match.group(2)), int(match.group(3))
         
-        # Render cards in a clean 2-column grid based on user's exact chosen order
-        for i in range(0, len(selected_codes), 2):
+        # Word highlight input
+        st.subheader("🔍 Side-by-Side Word Highlight")
+        highlight_word = st.text_input(
+            "Enter a key word to highlight across all active cards:",
+            placeholder="e.g., God, loved, world, Son...",
+        ).strip()
+        st.write("")
+
+        # Render cards in a clean 2-column grid based on active ordering
+        for i in range(0, len(active_codes), 2):
             cols = st.columns(2)
             for j in range(2):
-                if i + j < len(selected_codes):
-                    code = selected_codes[i + j]
+                idx = i + j
+                if idx < len(active_codes):
+                    code = active_codes[idx]
                     csv_file = TRANSLATIONS[code]
                     full_title = FULL_NAMES[code]
                     
@@ -156,43 +198,68 @@ if verse_query and selected_codes:
                             if not hit.empty:
                                 verse_text = hit.iloc[0][t_col]
 
+                        # Real-time word highlighting inside verse text
+                        display_text = verse_text
+                        if highlight_word:
+                            pattern = re.compile(re.escape(highlight_word), re.IGNORECASE)
+                            display_text = pattern.sub(lambda m: f'<span class="highlight-word">{m.group(0)}</span>', verse_text)
+
                         st.markdown(
                             f"""
-                            <div class="card" style="min-height: 160px; display: flex; flex-direction: column; justify-content: space-between;">
+                            <div class="notepad-card">
                                 <div>
                                     <p style="margin: 0 0 8px 0; font-weight: bold; color: #5C4B37; font-size: 1.05em;">{full_title}</p>
-                                    <p style="margin: 0 0 12px 0; font-size: 1.05em; font-style: italic;">"{verse_text}"</p>
+                                    <p style="margin: 0 0 12px 0; font-size: 1.05em; font-style: italic;">"{display_text}"</p>
                                 </div>
                             </div>
                             """,
                             unsafe_allow_html=True,
                         )
 
-        # ==========================================
-        # 4. INTERLINEAR WORD HIGHLIGHT TOOL
-        # ==========================================
-        st.markdown("---")
-        st.subheader("🔍 Side-by-Side Word Highlight (Interlinear Study)")
-        word_query = st.text_input("Enter a key word from the verse to examine original Hebrew/Greek root:", placeholder="e.g., loved, word, grace, light...")
-        if word_query:
-            st.info(f"**Root Word Study for '{word_query}' in {verse_query}:** Original language insight loaded across active translations. (Comparing how each translation renders this term for deeper clarity).")
+                        # Directional Controls (Left, Right, Up, Down)
+                        c_l, c_r, c_u, c_d = st.columns(4)
+                        with c_l:
+                            if idx > 0 and st.button("◀", key=f"left_{code}_{idx}", use_container_width=True, help="Move Left"):
+                                active_codes[idx], active_codes[idx - 1] = active_codes[idx - 1], active_codes[idx]
+                                st.session_state.active_order = active_codes
+                                st.rerun()
+                        with c_r:
+                            if idx < len(active_codes) - 1 and st.button("▶", key=f"right_{code}_{idx}", use_container_width=True, help="Move Right"):
+                                active_codes[idx], active_codes[idx + 1] = active_codes[idx + 1], active_codes[idx]
+                                st.session_state.active_order = active_codes
+                                st.rerun()
+                        with c_u:
+                            if idx >= 2 and st.button("▲", key=f"up_{code}_{idx}", use_container_width=True, help="Move Up (swap with card 2 spots above)"):
+                                active_codes[idx], active_codes[idx - 2] = active_codes[idx - 2], active_codes[idx]
+                                st.session_state.active_order = active_codes
+                                st.rerun()
+                        with c_d:
+                            if idx < len(active_codes) - 2 and st.button("▼", key=f"down_{code}_{idx}", use_container_width=True, help="Move Down (swap with card 2 spots below)"):
+                                active_codes[idx], active_codes[idx + 2] = active_codes[idx + 2], active_codes[idx]
+                                st.session_state.active_order = active_codes
+                                st.rerun()
 
         # ==========================================
-        # 5. PERSONAL STUDY NOTES & THEME TAGGING
+        # 4. PERSONAL STUDY NOTES & EXPANDED THEME TAGS
         # ==========================================
         st.markdown("---")
         st.subheader("📝 Personal Study Notes")
-        st.write(f"Jot down your thoughts & takeaways for **{verse_query}**:")
+        st.write(f"Jot down your thoughts and takeaways for **{verse_query}**:")
         
         user_notes = st.text_area(
             "Study Notes:",
             placeholder="Type your personal insights or observations here...",
-            label_visibility="collapsed"
+            label_version="collapsed"
         )
 
         selected_themes = st.pills(
             "Tag Note Theme:",
-            ["Comfort", "Wisdom", "Faith", "Provision", "Strength", "Peace"],
+            [
+                "Comfort", "Wisdom", "Faith", "Provision", 
+                "Strength", "Peace", "Grace", "Love", 
+                "Salvation", "Hope", "Guidance", "Healing", 
+                "Prayer", "Truth"
+            ],
             selection_mode="multi"
         )
 
@@ -205,8 +272,8 @@ if verse_query and selected_codes:
 
     else:
         st.info("Tip: Use the format **Book Chapter:Verse** (for example: `John 3:16`).")
-elif not selected_codes:
-    st.warning("Please select at least one translation above to display your comparison cards.")
+elif not active_codes:
+    st.warning("Please select at least one translation button above to display your cards.")
 
 st.markdown("---")
 if st.button("← Back to Home", use_container_width=True):
