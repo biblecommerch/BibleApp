@@ -89,7 +89,7 @@ st.markdown(
 st.markdown(
     """
     ### Where would you like to go?
-    - 🔍 **[Bible Search](https://kjv-bible.streamlit.app/~/+/bible_search)**: Look up verses across translations easily.
+    - 🔍 **[Bible Search](https://kjv-bible.streamlit.app/~/+/bible_search)**: Look up verses across the King James Version easily.
     - ⚖️ **[Bible Translations](https://kjv-bible.streamlit.app/~/+/translations)**: Compare and study your favorite verses side by side.
     - 📅 **[30 Day Challenge](https://kjv-bible.streamlit.app/~/+/thirty_day_challenge)**: Build a daily habit of reading God's Word through our curated reading guide.
     """
