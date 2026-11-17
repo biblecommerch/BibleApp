@@ -73,27 +73,30 @@ def generate_verse_reflection(book_name: str, chap: int, v_num: int, verse_text:
 # ==========================================
 # HEADER SECTION
 # ==========================================
-st.markdown(
-    """
-    <div style="background-color: #2b3a2a; padding: 30px; border-radius: 10px; text-align: center; border: 1px solid #4a6b4e; margin-bottom: 25px;">
-        <h1 style="margin:0; color: #f4f1ea;">Welcome to Your Bible App</h1>
-        <p style="margin-top:5px; color: #b7d5b8;">Your daily space for scripture search, reflection, and reading plans.</p>
-    </div>
-    """,
-    unsafe_allow_html=True,
-)
+st.markdown("""
+<div style="background-color: #2b3a2a; padding: 35px 25px; border-radius: 12px; text-align: center; border: 1px solid #4a6b4e; margin-bottom: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+    <h1 style="margin: 0; color: #f4f1ea; font-size: 2.2em; font-weight: 700;">📖 Welcome to Your Bible App</h1>
+    <p style="margin-top: 10px; color: #b7d5b8; font-size: 1.1em;">Your daily space for scripture search, reflection, and reading plans.</p>
+</div>
+""", unsafe_allow_html=True)
 
 # ==========================================
 # QUICK NAVIGATION BUTTONS
 # ==========================================
-st.markdown(
-    """
-    ### Where would you like to go?
-    - 🔍 **[Bible Search](https://kjv-bible.streamlit.app/~/+/bible_search)**: Look up verses across the King James Version easily.
-    - ⚖️ **[Bible Translations](https://kjv-bible.streamlit.app/~/+/translations)**: Compare and study your favorite verses side by side.
-    - 📅 **[30 Day Challenge](https://kjv-bible.streamlit.app/~/+/thirty_day_challenge)**: Build a daily habit of reading God's Word through our curated reading guide.
-    """
-)
+st.markdown("### Where would you like to go?")
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    if st.button("🔍 Bible Search", use_container_width=True):
+        st.switch_page("pages/bible_search.py")
+
+with col2:
+    if st.button("⚖️ Translations", use_container_width=True):
+        st.switch_page("pages/translations.py")
+
+with col3:
+    if st.button("📅 30 Day Challenge", use_container_width=True):
+        st.switch_page("pages/thirty_day_challenge.py")
 
 st.write("")
 
@@ -136,13 +139,13 @@ if kjv_master is not None and not kjv_master.empty:
 
     st.markdown(
         f"""
-        <div class="card" style="background-color: #f9f6f0; padding: 20px; border-radius: 8px; border: 1px solid #e2d9c8;">
-        <p style="font-size: 1.15em; color: #2c221e;"><b>"{text}"</b></p>
-        <p style="margin-bottom: 12px; color: #5c4b37;">— {book} {chapter}:{verse_num} ({ver_code})</p>
-        <hr style="border: 0; border-top: 1px solid #e2d9c8; margin: 10px 0;">
-        <p style="margin: 0; font-size: 0.95em; color: #2c221e;">
-            <b>Daily Reflection &amp; Encouragement:</b> {reflection_text}
-        </p>
+        <div class="card" style="background-color: #fcfbfa; padding: 24px; border-radius: 10px; border: 1px solid #e2d9c8; box-shadow: 0 2px 4px rgba(0,0,0,0.02); margin-top: 10px;">
+            <p style="font-size: 1.2em; color: #2c221e; line-height: 1.5; font-style: italic; margin-bottom: 8px;">"{text}"</p>
+            <p style="margin-bottom: 15px; color: #5c4b37; font-weight: 600; font-size: 0.95em;">— {book} {chapter}:{verse_num} ({ver_code})</p>
+            <hr style="border: 0; border-top: 1px solid #e2d9c8; margin: 12px 0;">
+            <p style="margin: 0; font-size: 0.98em; color: #3a322e; line-height: 1.4;">
+                <b style="color: #2b3a2a;">Daily Reflection &amp; Encouragement:</b> {reflection_text}
+            </p>
         </div>
         """,
         unsafe_allow_html=True
