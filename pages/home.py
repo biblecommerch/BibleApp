@@ -19,7 +19,6 @@ render_sidebar_auth()
 # ==========================================
 @st.cache_data
 def load_bible_data(csv_filename="KJV.csv"):
-    # Check common paths and casing on Streamlit Cloud
     candidates = [
         os.path.join("data", csv_filename),
         os.path.join("data", csv_filename.lower()),
@@ -80,9 +79,9 @@ def generate_verse_reflection(book_name: str, chap: int, v_num: int, verse_text:
 # ==========================================
 st.markdown(
     """
-    <div style="background-color: #2b3a2a; padding: 32px 24px; border-radius: 12px; text-align: center; border: 1px solid #4a6b4e; margin-bottom: 25px;">
-        <h1 style="margin: 0 !important; color: #f4f1ea !important; font-size: 2.1em;">Welcome to Your Bible App</h1>
-        <p style="margin-top: 8px !important; margin-bottom: 0 !important; color: #d5e8d6 !important; font-size: 1.05em;">
+    <div style="background-color: #2b3a2a; padding: 35px 25px; border-radius: 12px; text-align: center; border: 1px solid #4a6b4e; margin-bottom: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+        <h1 style="margin: 0 !important; color: #f4f1ea !important; font-size: 2.2em; font-weight: 700;">📖 Welcome to Your Bible App</h1>
+        <p style="margin-top: 10px !important; margin-bottom: 0 !important; color: #d5e8d6 !important; font-size: 1.05em;">
             Your daily space for scripture search, reflection, and reading plans.
         </p>
     </div>
@@ -91,7 +90,7 @@ st.markdown(
 )
 
 # ==========================================
-# QUICK NAVIGATION SECTION
+# QUICK NAVIGATION BUTTONS
 # ==========================================
 st.markdown("### Where would you like to go?")
 
@@ -116,7 +115,6 @@ if kjv_master is not None and not kjv_master.empty:
     idx = get_daily_verse_index() % len(kjv_master)
     daily_row = kjv_master.iloc[idx]
     
-    # Flexible column lookup
     cols_lower = {str(c).strip().lower(): c for c in kjv_master.columns}
     b_col = cols_lower.get("book", kjv_master.columns[0])
     c_col = cols_lower.get("chapter", kjv_master.columns[1] if len(kjv_master.columns) > 1 else kjv_master.columns[0])
@@ -128,7 +126,6 @@ if kjv_master is not None and not kjv_master.empty:
     verse_num = int(daily_row[v_col])
     text = str(daily_row[t_col])
 else:
-    # Guaranteed fallback if CSV path differs
     book, chapter, verse_num = "Psalm", 119, 105
     text = "Thy word is a lamp unto my feet, and a light unto my path."
 
@@ -136,17 +133,23 @@ reflection_text = generate_verse_reflection(book, chapter, verse_num, text)
 
 st.markdown(
     f"""
-    <div class="card" style="background-color: #f9f6f0; padding: 22px; border-radius: 10px; border: 1px solid #e2d9c8;">
-        <p style="font-size: 1.15em; color: #2c221e !important; margin-bottom: 8px;"><b>"{text}"</b></p>
-        <p style="margin-bottom: 12px; color: #5c4b37 !important; font-weight: 600;">— {book} {chapter}:{verse_num} (KJV)</p>
+    <div class="card" style="background-color: #fcfbfa; padding: 24px; border-radius: 10px; border: 1px solid #e2d9c8; box-shadow: 0 2px 4px rgba(0,0,0,0.02); margin-bottom: 14px;">
+        <p style="font-size: 1.2em; color: #2c221e !important; line-height: 1.5; font-style: italic; margin-bottom: 8px;">"{text}"</p>
+        <p style="margin-bottom: 15px; color: #5c4b37 !important; font-weight: 600; font-size: 0.95em;">— {book} {chapter}:{verse_num} (KJV)</p>
         <hr style="border: 0; border-top: 1px solid #e2d9c8; margin: 12px 0;">
-        <p style="margin: 0; font-size: 0.95em; color: #2c221e !important; line-height: 1.5;">
-            <b>Daily Reflection &amp; Encouragement:</b> {reflection_text}
+        <p style="margin: 0; font-size: 0.98em; color: #3a322e !important; line-height: 1.5;">
+            <b style="color: #2b3a2a !important;">Daily Reflection &amp; Encouragement:</b> {reflection_text}
         </p>
     </div>
     """,
     unsafe_allow_html=True
 )
+
+if st.button("🔎 Go Deeper — Compare Translations for This Verse", use_container_width=True):
+    st.session_state["selected_book"] = book
+    st.session_state["selected_chapter"] = chapter
+    st.session_state["selected_verse"] = verse_num
+    st.switch_page("pages/translations.py")
 
 # ==========================================
 # FOOTER SECTION
