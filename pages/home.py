@@ -18,19 +18,24 @@ render_sidebar_auth()
 # HELPER FUNCTIONS
 # ==========================================
 @st.cache_data
-def load_bible_data(csv_filename):
-    path = os.path.join("data", csv_filename)
-    if os.path.exists(path):
-        return pd.read_csv(path)
+def load_bible_data(csv_filename="KJV.csv"):
+    # Check common paths and casing on Streamlit Cloud
+    candidates = [
+        os.path.join("data", csv_filename),
+        os.path.join("data", csv_filename.lower()),
+        csv_filename,
+        csv_filename.lower(),
+    ]
+    for path in candidates:
+        if os.path.exists(path):
+            return pd.read_csv(path)
     return None
 
 def get_daily_verse_index():
-    day_of_year = datetime.now().timetuple().tm_yday
-    return day_of_year
+    return datetime.now().timetuple().tm_yday
 
 def generate_verse_reflection(book_name: str, chap: int, v_num: int, verse_text: str) -> str:
     t = verse_text.lower()
-    b = book_name.strip().lower()
     
     if any(w in t for w in ["rich", "gold", "silver", "bless", "blessed", "increase", "prosper", "inheritance", "land"]):
         return (
@@ -73,30 +78,30 @@ def generate_verse_reflection(book_name: str, chap: int, v_num: int, verse_text:
 # ==========================================
 # HEADER SECTION
 # ==========================================
-st.markdown("""
-<div style="background-color: #2b3a2a; padding: 35px 25px; border-radius: 12px; text-align: center; border: 1px solid #4a6b4e; margin-bottom: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-    <h1 style="margin: 0; color: #f4f1ea; font-size: 2.2em; font-weight: 700;">📖 Welcome to Your Bible App</h1>
-    <p style="margin-top: 10px; color: #b7d5b8; font-size: 1.1em;">Your daily space for scripture search, reflection, and reading plans.</p>
-</div>
-""", unsafe_allow_html=True)
+st.markdown(
+    """
+    <div style="background-color: #2b3a2a; padding: 32px 24px; border-radius: 12px; text-align: center; border: 1px solid #4a6b4e; margin-bottom: 25px;">
+        <h1 style="margin: 0 !important; color: #f4f1ea !important; font-size: 2.1em;">Welcome to Your Bible App</h1>
+        <p style="margin-top: 8px !important; margin-bottom: 0 !important; color: #d5e8d6 !important; font-size: 1.05em;">
+            Your daily space for scripture search, reflection, and reading plans.
+        </p>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
 
 # ==========================================
-# QUICK NAVIGATION BUTTONS
+# QUICK NAVIGATION SECTION
 # ==========================================
 st.markdown("### Where would you like to go?")
+
 col1, col2, col3 = st.columns(3)
-
 with col1:
-    if st.button("🔍 Bible Search", use_container_width=True):
-        st.switch_page("pages/bible_search.py")
-
+    st.page_link("pages/bible_search.py", label="Bible Search", icon="🔍", use_container_width=True)
 with col2:
-    if st.button("⚖️ Translations", use_container_width=True):
-        st.switch_page("pages/translations.py")
-
+    st.page_link("pages/translations.py", label="Translations", icon="⚖️", use_container_width=True)
 with col3:
-    if st.button("📅 30 Day Challenge", use_container_width=True):
-        st.switch_page("pages/thirty_day_challenge.py")
+    st.page_link("pages/thirty_day_challenge.py", label="30 Day Challenge", icon="📅", use_container_width=True)
 
 st.write("")
 
@@ -106,50 +111,42 @@ st.write("")
 st.markdown("### ✨ Daily Verse")
 
 kjv_master = load_bible_data("KJV.csv")
+
 if kjv_master is not None and not kjv_master.empty:
     idx = get_daily_verse_index() % len(kjv_master)
     daily_row = kjv_master.iloc[idx]
     
-    book = daily_row.get("Book", "Genesis")
-    chapter = daily_row.get("Chapter", 1)
-    target_verse = 1
-    for col_candidate in ["Verse", "verse", "v"]:
-        if col_candidate in daily_row.index:
-            target_verse = daily_row[col_candidate]
-            break
-            
-    v_col = None
-    t_col = None
-    for col in kjv_master.columns:
-        if str(col).strip().lower() in ["verse", "v"]:
-            v_col = col
-        if str(col).strip().lower() in ["text", "content", "verse_text"]:
-            t_col = col
-            
-    if v_col is None:
-        v_col = kjv_master.columns[1] if len(kjv_master.columns) > 1 else kjv_master.columns[0]
-    if t_col is None:
-        t_col = kjv_master.columns[2] if len(kjv_master.columns) > 2 else kjv_master.columns[1]
-        
-    verse_num = daily_row.get(v_col, target_verse)
-    text = daily_row.get(t_col, "")
-    ver_code = "KJV"
+    # Flexible column lookup
+    cols_lower = {str(c).strip().lower(): c for c in kjv_master.columns}
+    b_col = cols_lower.get("book", kjv_master.columns[0])
+    c_col = cols_lower.get("chapter", kjv_master.columns[1] if len(kjv_master.columns) > 1 else kjv_master.columns[0])
+    v_col = cols_lower.get("verse", cols_lower.get("v", kjv_master.columns[2] if len(kjv_master.columns) > 2 else kjv_master.columns[0]))
+    t_col = cols_lower.get("text", cols_lower.get("content", cols_lower.get("verse_text", kjv_master.columns[-1])))
 
-    reflection_text = generate_verse_reflection(str(book), int(chapter), int(verse_num), str(text))
+    book = str(daily_row[b_col])
+    chapter = int(daily_row[c_col])
+    verse_num = int(daily_row[v_col])
+    text = str(daily_row[t_col])
+else:
+    # Guaranteed fallback if CSV path differs
+    book, chapter, verse_num = "Psalm", 119, 105
+    text = "Thy word is a lamp unto my feet, and a light unto my path."
 
-    st.markdown(
-        f"""
-        <div class="card" style="background-color: #fcfbfa; padding: 24px; border-radius: 10px; border: 1px solid #e2d9c8; box-shadow: 0 2px 4px rgba(0,0,0,0.02); margin-top: 10px;">
-            <p style="font-size: 1.2em; color: #2c221e; line-height: 1.5; font-style: italic; margin-bottom: 8px;">"{text}"</p>
-            <p style="margin-bottom: 15px; color: #5c4b37; font-weight: 600; font-size: 0.95em;">— {book} {chapter}:{verse_num} ({ver_code})</p>
-            <hr style="border: 0; border-top: 1px solid #e2d9c8; margin: 12px 0;">
-            <p style="margin: 0; font-size: 0.98em; color: #3a322e; line-height: 1.4;">
-                <b style="color: #2b3a2a;">Daily Reflection &amp; Encouragement:</b> {reflection_text}
-            </p>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+reflection_text = generate_verse_reflection(book, chapter, verse_num, text)
+
+st.markdown(
+    f"""
+    <div class="card" style="background-color: #f9f6f0; padding: 22px; border-radius: 10px; border: 1px solid #e2d9c8;">
+        <p style="font-size: 1.15em; color: #2c221e !important; margin-bottom: 8px;"><b>"{text}"</b></p>
+        <p style="margin-bottom: 12px; color: #5c4b37 !important; font-weight: 600;">— {book} {chapter}:{verse_num} (KJV)</p>
+        <hr style="border: 0; border-top: 1px solid #e2d9c8; margin: 12px 0;">
+        <p style="margin: 0; font-size: 0.95em; color: #2c221e !important; line-height: 1.5;">
+            <b>Daily Reflection &amp; Encouragement:</b> {reflection_text}
+        </p>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 
 # ==========================================
 # FOOTER SECTION
