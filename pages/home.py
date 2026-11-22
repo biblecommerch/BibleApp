@@ -109,17 +109,75 @@ df = load_bible_data(TRANSLATIONS[version])
 # ==========================================
 st.markdown("### ✨ Daily Verse")
 
+
+def _safe_int(val, default=1):
+    """Safely converts a chapter or verse cell to int without crashing on blanks/text."""
+    num = pd.to_numeric(val, errors="coerce")
+    return int(num) if pd.notna(num) else default
+
+
+def _find_col(columns, candidates):
+    """Finds the first matching column name case-insensitively."""
+    col_map = {str(c).strip().lower(): c for c in columns}
+    for cand in candidates:
+        if cand.lower() in col_map:
+            return col_map[cand.lower()]
+    return None
+
+
 if df is not None and not df.empty:
-    # Uses the current day of the year (1-365) so all visitors see the same verse today,
-    # automatically rendered in whichever Bible translation they currently have selected.
     day_of_year = datetime.now().timetuple().tm_yday
-    verse_index = day_of_year % len(df)
-    daily_row = df.iloc[verse_index]
-    
-    book = daily_row.get("Book", daily_row.get("book", ""))
-    chapter = daily_row.get("Chapter", daily_row.get("chapter", ""))
-    verse_num = daily_row.get("Verse", daily_row.get("verse", ""))
-    text = daily_row.get("Text", daily_row.get("text", ""))
+    kjv_master = load_bible_data("KJV.csv")
+
+    # 1. Pick today's target (Book, Chapter, Verse) from KJV.csv when available
+    if kjv_master is not None and not kjv_master.empty:
+        m_book_col = _find_col(kjv_master.columns, ["Book", "book"])
+        m_chap_col = _find_col(kjv_master.columns, ["Chapter", "chapter"])
+        m_verse_col = _find_col(kjv_master.columns, ["Verse", "verse"])
+
+        master_row = kjv_master.iloc[day_of_year % len(kjv_master)]
+        target_book = str(master_row[m_book_col]).strip() if m_book_col else ""
+        target_chap = _safe_int(master_row[m_chap_col], 1) if m_chap_col else 1
+        target_verse = _safe_int(master_row[m_verse_col], 1) if m_verse_col else 1
+    else:
+        # Fallback if KJV.csv cannot be loaded: pick from active df by day_of_year
+        d_book_col = _find_col(df.columns, ["Book", "book"])
+        d_chap_col = _find_col(df.columns, ["Chapter", "chapter"])
+        d_verse_col = _find_col(df.columns, ["Verse", "verse"])
+
+        fallback_row = df.iloc[day_of_year % len(df)]
+        target_book = str(fallback_row[d_book_col]).strip() if d_book_col else ""
+        target_chap = _safe_int(fallback_row[d_chap_col], 1) if d_chap_col else 1
+        target_verse = _safe_int(fallback_row[d_verse_col], 1) if d_verse_col else 1
+
+    # 2. Match that exact Book, Chapter, and Verse in the currently selected translation (df)
+    book_col = _find_col(df.columns, ["Book", "book"])
+    chap_col = _find_col(df.columns, ["Chapter", "chapter"])
+    verse_col = _find_col(df.columns, ["Verse", "verse"])
+    text_col = _find_col(df.columns, ["Text", "text"])
+
+    daily_row = None
+    if book_col and chap_col and verse_col and text_col and target_book:
+        chap_series = pd.to_numeric(df[chap_col], errors="coerce")
+        verse_series = pd.to_numeric(df[verse_col], errors="coerce")
+        book_series = df[book_col].astype(str).str.strip().str.lower()
+
+        matched = df[
+            (book_series == target_book.lower())
+            & (chap_series == target_chap)
+            & (verse_series == target_verse)
+        ]
+        if not matched.empty:
+            daily_row = matched.iloc[0]
+
+    # Fallback to day_of_year % len(df) if the reference isn't found in the active CSV
+    if daily_row is None:
+        daily_row = df.iloc[day_of_year % len(df)]
+
+    book = daily_row[book_col] if book_col else target_book
+    chapter = daily_row[chap_col] if chap_col else target_chap
+    verse_num = daily_row[verse_col] if verse_col else target_verse
+    text = daily_row[text_col] if text_col else ""
 
     st.markdown(
         f"""
