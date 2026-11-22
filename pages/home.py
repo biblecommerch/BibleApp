@@ -7,6 +7,7 @@ import re
 import pandas as pd
 import streamlit as st
 from styles import apply_global_styles
+from site_config import APP_NAME, APP_TAGLINE, APP_FOOTER_TAGLINE, name_to_anchor
 
 # Import custom auth helper functions to manage sidebar login, user sessions, and database saves
 from auth_helper import render_sidebar_auth, require_email_to_save, get_supabase
@@ -15,7 +16,7 @@ from auth_helper import render_sidebar_auth, require_email_to_save, get_supabase
 # ==========================================
 # PAGE CONFIGURATION & STYLING
 # ==========================================
-st.set_page_config(page_title="Mel's Bible Apps", page_icon="📖", layout="centered")
+st.set_page_config(page_title=APP_NAME, page_icon="📖", layout="centered")
 apply_global_styles()
 
 
@@ -75,10 +76,10 @@ def _is_valid_email(email):
 # ==========================================
 # Renders the main title header box at the top of the home page
 st.markdown(
-    """
+    f"""
     <div class="header-box">
-        <h1 style="margin:0;">Mel's Bible Apps</h1>
-        <p style="margin-top:5px;">Read, Research, &amp; Stay Centered on God's Word</p>
+        <h1 style="margin:0;">{APP_NAME}</h1>
+        <p style="margin-top:5px;">{APP_TAGLINE}</p>
     </div>
     """,
     unsafe_allow_html=True,
@@ -470,10 +471,14 @@ with news_col:
 
 
 # ==========================================
-# 12. EXPLORE MORE MEL'S BIBLE APPS PAGES
+# 12. EXPLORE MORE APP PAGES
 # ==========================================
+explore_heading = f"Explore More {APP_NAME} Pages"
+explore_anchor = name_to_anchor(explore_heading)
+home_anchor = name_to_anchor(APP_NAME)
+
 st.markdown("---")
-st.subheader("🧭 Explore More Mel's Bible Apps Pages")
+st.subheader(f"🧭 {explore_heading}")
 st.write("Dedicated tools and sections currently in development:")
 
 p_col1, p_col2, p_col3 = st.columns(3)
@@ -497,7 +502,7 @@ p_col4, p_col5 = st.columns(2)
 with p_col4:
     with st.container(border=True):
         st.markdown("#### ❤️ My Mission")
-        st.caption("Our Vision • Why Mel's Bible Apps Is Free • Support & Donations")
+        st.caption(f"Our Vision • Why {APP_NAME} Is Free • Support & Donations")
         st.button("Coming Soon", disabled=True, key="p_mis", use_container_width=True)
 with p_col5:
     with st.container(border=True):
@@ -510,11 +515,11 @@ with p_col5:
 # 13. SUPPORT THE PROJECT: SHOP MEL'S GOODS
 # ==========================================
 st.markdown("---")
-st.subheader("🛍️ Support Mel's Bible Apps — Shop Mel's Goods")
+st.subheader(f"🛍️ Support {APP_NAME} — Shop Mel's Goods")
 with st.container(border=True):
     st.markdown("### Christian Tees & Faith-Inspired Finds")
     st.write(
-        "Every purchase from Mel's Goods helps keep Mel's Bible Apps free and growing. "
+        f"Every purchase from Mel's Goods helps keep {APP_NAME} free and growing. "
         "Browse our collection of Christian T-shirts and unique goods directly in our store:"
     )
     st.link_button(
@@ -533,25 +538,25 @@ st.markdown("---")
 st.markdown(
     f"""<div style="text-align: center; padding: 1.5rem 0 2rem 0; font-size: 0.9rem; opacity: 0.85;">
 <p style="margin-bottom: 0.5rem;">
-<strong>Mel's Bible Apps</strong> &nbsp;|&nbsp;
-<a href="#mel-s-bible-apps" style="text-decoration: none;">Home</a> &nbsp;•&nbsp;
+<strong>{APP_NAME}</strong> &nbsp;|&nbsp;
+<a href="{home_anchor}" style="text-decoration: none;">Home</a> &nbsp;•&nbsp;
 <a href="#bible-search" style="text-decoration: none;">Bible Search</a> &nbsp;•&nbsp;
-<a href="#explore-more-mels-bible-apps-pages" style="text-decoration: none;">Research &amp; Study</a> &nbsp;•&nbsp;
+<a href="{explore_anchor}" style="text-decoration: none;">Research &amp; Study</a> &nbsp;•&nbsp;
 <a href="https://www.biblecomblog.com" target="_blank" style="text-decoration: none;">Blog</a> &nbsp;•&nbsp;
-<a href="#explore-more-mels-bible-apps-pages" style="text-decoration: none;">Prayer</a> &nbsp;•&nbsp;
-<a href="#explore-more-mels-bible-apps-pages" style="text-decoration: none;">My Mission</a> &nbsp;•&nbsp;
-<a href="#explore-more-mels-bible-apps-pages" style="text-decoration: none;">Contact</a>
+<a href="{explore_anchor}" style="text-decoration: none;">Prayer</a> &nbsp;•&nbsp;
+<a href="{explore_anchor}" style="text-decoration: none;">My Mission</a> &nbsp;•&nbsp;
+<a href="{explore_anchor}" style="text-decoration: none;">Contact</a>
 </p>
 <p style="margin-bottom: 0.5rem; font-size: 0.85rem;">
-Scripture quotations are from the {version} — Public Domain.
+{APP_FOOTER_TAGLINE} — Scripture quotations are from the {version} (Public Domain).
 </p>
 <p style="margin-bottom: 0.5rem; font-size: 0.85rem;">
 <a href="/privacy" target="_self" style="text-decoration: none;">Privacy Policy</a> &nbsp;|&nbsp;
-<a href="#explore-more-mels-bible-apps-pages" style="text-decoration: none;">Terms of Use</a> &nbsp;|&nbsp;
+<a href="{explore_anchor}" style="text-decoration: none;">Terms of Use</a> &nbsp;|&nbsp;
 <a href="https://www.ebay.com/sch/i.html?_dkr=1&iconV2Request=true&_blrs=recall_filtering&_ssn=mels_goods&store_name=shopmelsgoods&_oac=1&store_cat=49634617018" target="_blank" style="text-decoration: none;">Support via Mel's Goods</a>
 </p>
 <p style="margin: 0; font-size: 0.8rem; opacity: 0.7;">
-© 2026 Mel's Bible Apps. All rights reserved.
+© 2026 {APP_NAME}. All rights reserved.
 </p>
 </div>""",
     unsafe_allow_html=True,
